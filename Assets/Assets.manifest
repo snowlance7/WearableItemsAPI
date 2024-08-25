@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 3891585536
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: wearable_items_assets
+      Dependencies: {}
