@@ -47,6 +47,10 @@
     <ItemGroup>
       <Compile Remove="C:\Users\snowl\.nuget\packages\bepinex.assemblypublicizer.msbuild\0.4.1\contentFiles\cs\any\IgnoresAccessChecksToAttribute.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <None Remove=".gitattributes" />
+      <None Remove=".gitignore" />
+    </ItemGroup>
 
     <!-- Primary Package References -->
     <ItemGroup>
