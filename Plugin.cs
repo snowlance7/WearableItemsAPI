@@ -15,7 +15,7 @@ namespace WearableItemsAPI
     {
         public const string modGUID = "Snowlance.WearableItemsAPI";
         public const string modName = "WearableItemsAPI";
-        public const string modVersion = "0.1.2";
+        public const string modVersion = "0.1.3";
 
         internal static Plugin PluginInstance;
         internal static ManualLogSource LoggerInstance;

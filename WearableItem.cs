@@ -83,6 +83,16 @@ namespace WearableItemsAPI
             }
         }
 
+        public override void DiscardItem()
+        {
+            base.DiscardItem();
+
+            if (playerWornBy != null)
+            {
+                UnWear(discard: true);
+            }
+        }
+
         public virtual void Wear() // TODO: Make sure showWearableOnClient works
         {
             logger.LogDebug("Wearing " + itemProperties.itemName);
@@ -128,7 +138,7 @@ namespace WearableItemsAPI
             WearServerRpc(playerWornBy.actualClientId, WearSlot, showWearable, wearablePositionOffset, wearableRotationOffset);
         }
 
-        public virtual void UnWear()
+        public virtual void UnWear(bool discard = false)
         {
             logger.LogDebug("Unwearing " + itemProperties.itemName);
 
@@ -165,7 +175,7 @@ namespace WearableItemsAPI
                     break;
             }
 
-            if (playerWornBy != null && !playerWornBy.isPlayerDead)
+            if (playerWornBy != null && !playerWornBy.isPlayerDead && !discard)
             {
                 playerWornBy.GrabObjectServerRpc(NetworkObject);
                 parentObject = playerWornBy.localItemHolder;
