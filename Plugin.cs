@@ -9,17 +9,13 @@ using UnityEngine;
 
 namespace WearableItemsAPI
 {
-    [BepInPlugin(modGUID, modName, modVersion)]
+    [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     [BepInDependency(LethalCompanyInputUtils.PluginInfo.PLUGIN_GUID)]
     internal class Plugin : BaseUnityPlugin
     {
-        public const string modGUID = "Snowlance.WearableItemsAPI";
-        public const string modName = "WearableItemsAPI";
-        public const string modVersion = "0.1.3";
-
         internal static Plugin PluginInstance;
         internal static ManualLogSource LoggerInstance;
-        private readonly Harmony harmony = new Harmony(modGUID);
+        private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         internal static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
 
         public static AssetBundle? ModAssets;
@@ -74,7 +70,7 @@ namespace WearableItemsAPI
             LoggerInstance.LogDebug($"Got AssetBundle at: {Path.Combine(sAssemblyLocation, "wearable_items_assets")}");
 
             // Finished
-            Logger.LogInfo($"{modGUID} v{modVersion} has loaded!");
+            Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
         }
 
         private static void InitializeNetworkBehaviours()

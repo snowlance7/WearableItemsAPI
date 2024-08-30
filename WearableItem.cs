@@ -22,8 +22,6 @@ namespace WearableItemsAPI
          * 9 left shoulder
          * 10 right shoulder */
 
-        private static ManualLogSource logger = Plugin.LoggerInstance;
-
         public PlayerControllerB? playerWornBy;
 
         private Transform? wornPos;
@@ -83,19 +81,9 @@ namespace WearableItemsAPI
             }
         }
 
-        public override void DiscardItem()
-        {
-            base.DiscardItem();
-
-            if (playerWornBy != null)
-            {
-                UnWear(discard: true);
-            }
-        }
-
         public virtual void Wear() // TODO: Make sure showWearableOnClient works
         {
-            logger.LogDebug("Wearing " + itemProperties.itemName);
+            LoggerInstance.LogDebug("Wearing " + itemProperties.itemName);
 
             if (playerHeldBy != null)
             {
@@ -103,7 +91,7 @@ namespace WearableItemsAPI
             }
             else
             {
-                logger.LogError("No player holding object found and no player was provided");
+                LoggerInstance.LogError("No player holding object found and no player was provided");
                 return;
             }
 
@@ -120,8 +108,6 @@ namespace WearableItemsAPI
 
         public virtual void Wear(PlayerControllerB player) // TODO: Make sure showWearableOnClient works
         {
-            logger.LogDebug("Wearing " + itemProperties.itemName);
-
             playerWornBy = player;
 
             SetWearSlot(WearSlot);
@@ -138,10 +124,8 @@ namespace WearableItemsAPI
             WearServerRpc(playerWornBy.actualClientId, WearSlot, showWearable, wearablePositionOffset, wearableRotationOffset);
         }
 
-        public virtual void UnWear(bool discard = false)
+        public virtual void UnWear(bool grabItem = true)
         {
-            logger.LogDebug("Unwearing " + itemProperties.itemName);
-
             UnwearServerRpc();
 
             base.gameObject.GetComponent<Collider>().enabled = true;
@@ -175,7 +159,7 @@ namespace WearableItemsAPI
                     break;
             }
 
-            if (playerWornBy != null && !playerWornBy.isPlayerDead && !discard)
+            if (playerWornBy != null && !playerWornBy.isPlayerDead && grabItem)
             {
                 playerWornBy.GrabObjectServerRpc(NetworkObject);
                 parentObject = playerWornBy.localItemHolder;
@@ -191,7 +175,7 @@ namespace WearableItemsAPI
         {
             if (playerWornBy == null)
             {
-                logger.LogError("PlayerWornBy is null");
+                LoggerInstance.LogError("PlayerWornBy is null");
                 return;
             }
 
@@ -231,7 +215,7 @@ namespace WearableItemsAPI
                     EnableItemMeshes(false);
                     break;
                 default:
-                    logger.LogError("Wearslot not found");
+                    LoggerInstance.LogError("Wearslot not found");
                     break;
             }
         }
