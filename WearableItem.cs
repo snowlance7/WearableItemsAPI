@@ -95,7 +95,7 @@ namespace WearableItemsAPI
                 return;
             }
 
-            SetWearSlot(WearSlot);
+            SetWearSlot(WearSlot, this);
 
             playerHeldBy.DiscardHeldObject(false, playerHeldBy.NetworkObject);
 
@@ -110,7 +110,7 @@ namespace WearableItemsAPI
         {
             playerWornBy = player;
 
-            SetWearSlot(WearSlot);
+            SetWearSlot(WearSlot, this);
 
             if (playerHeldBy != null)
             {
@@ -126,52 +126,10 @@ namespace WearableItemsAPI
 
         public virtual void UnWear(bool grabItem = true)
         {
-            UnwearServerRpc();
-
-            base.gameObject.GetComponent<Collider>().enabled = true;
-            //ScanNode.enabled = true;
-            EnableItemMeshes(true);
-
-            switch (WearSlot)
-            {
-                case WearableSlot.Head:
-                    WearableUIController.Instance.HeadItem = null;
-                    break;
-                case WearableSlot.RightArm:
-                    WearableUIController.Instance.RightArmItem = null;
-                    break;
-                case WearableSlot.LeftArm:
-                    WearableUIController.Instance.LeftArmItem = null;
-                    break;
-                case WearableSlot.BothArms:
-                    WearableUIController.Instance.BothArmsItem = null;
-                    break;
-                case WearableSlot.Chest:
-                    WearableUIController.Instance.ChestItem = null;
-                    break;
-                case WearableSlot.Legs:
-                    WearableUIController.Instance.LegsItem = null;
-                    break;
-                case WearableSlot.Feet:
-                    WearableUIController.Instance.FeetItem = null;
-                    break;
-                default:
-                    break;
-            }
-
-            if (playerWornBy != null && !playerWornBy.isPlayerDead && grabItem)
-            {
-                playerWornBy.GrabObjectServerRpc(NetworkObject);
-                parentObject = playerWornBy.localItemHolder;
-                GrabItemOnClient();
-            }
-            else { parentObject = null; }
-
-            wornPos = null;
-            playerWornBy = null;
+            UnwearServerRpc(grabItem);
         }
 
-        public void SetWearSlot(WearableSlot slot)
+        public void SetWearSlot(WearableSlot slot, GrabbableObject? itemToSlot = null)
         {
             if (playerWornBy == null)
             {
@@ -180,38 +138,39 @@ namespace WearableItemsAPI
             }
 
             WearSlot = slot;
+            wornPos = null;
 
             switch (WearSlot)
             {
                 case WearableSlot.Head:
-                    wornPos = playerWornBy.bodyParts[0];
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.HeadItem = this; }
+                    if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[0]; }
+                    if (playerWornBy == localPlayer) { WearableUIController.Instance.HeadItem = itemToSlot; }
                     break;
                 case WearableSlot.RightArm:
-                    wornPos = playerWornBy.bodyParts[1];
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.RightArmItem = this; }
+                    if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[1]; }
+                    if (playerWornBy == localPlayer) { WearableUIController.Instance.RightArmItem = itemToSlot; }
                     break;
                 case WearableSlot.LeftArm:
-                    wornPos = playerWornBy.bodyParts[2];
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.LeftArmItem = this; }
+                    if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[2]; }
+                    if (playerWornBy == localPlayer) { WearableUIController.Instance.LeftArmItem = itemToSlot; }
                     break;
                 case WearableSlot.BothArms:
                     //bodyPos = playerWornBy.bodyParts[];
                     break;
                 case WearableSlot.Chest:
-                    wornPos = playerWornBy.bodyParts[5];
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.ChestItem = this; }
+                    if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[5]; }
+                    if (playerWornBy == localPlayer) { WearableUIController.Instance.ChestItem = itemToSlot; }
                     break;
                 case WearableSlot.Legs:
-                    wornPos = playerWornBy.bodyParts[8];
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.LegsItem = this; }
+                    if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[8]; }
+                    if (playerWornBy == localPlayer) { WearableUIController.Instance.LegsItem = itemToSlot; }
                     break;
                 case WearableSlot.Feet:
-                    wornPos = playerWornBy.bodyParts[6];
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.FeetItem = this; }
+                    if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[6]; }
+                    if (playerWornBy == localPlayer) { WearableUIController.Instance.FeetItem = itemToSlot; }
                     break;
                 case WearableSlot.None:
-                    wornPos = playerWornBy.transform;
+                    if (itemToSlot != null) { wornPos = playerWornBy.transform; }
                     EnableItemMeshes(false);
                     break;
                 default:
@@ -236,7 +195,7 @@ namespace WearableItemsAPI
             if (localPlayer.actualClientId == clientId) { return; }
 
             playerWornBy = StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == clientId).First();
-            SetWearSlot(slot);
+            SetWearSlot(slot, this);
             EnableItemMeshes(_showWearable);
             wearablePositionOffset = _wearablePositionOffset;
             wearableRotationOffset = _wearableRotationOffset;
@@ -247,23 +206,37 @@ namespace WearableItemsAPI
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void UnwearServerRpc()
+        private void UnwearServerRpc(bool grabItem = true)
         {
             if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
             {
-                UnwearClientRpc();
+                UnwearClientRpc(grabItem);
             }
         }
 
         [ClientRpc]
-        private void UnwearClientRpc()
+        private void UnwearClientRpc(bool grabItem = true)
         {
-            if (playerWornBy == localPlayer) { return; }
+            parentObject = null;
+
+            if (playerWornBy != null && playerWornBy == localPlayer)
+            {
+                SetWearSlot(WearSlot, null);
+
+                if (!playerWornBy.isPlayerDead && grabItem)
+                {
+                    LoggerInstance.LogDebug("Grabbing " + itemProperties.itemName);
+                    playerWornBy.GrabObjectServerRpc(NetworkObject);
+                    parentObject = playerWornBy.localItemHolder;
+                    GrabItemOnClient();
+                }
+            }
+
             base.gameObject.GetComponent<Collider>().enabled = true;
             //ScanNode.enabled = true;
             EnableItemMeshes(true);
             playerWornBy = null;
-            parentObject = null;
+            wornPos = null;
         }
     }
 }
