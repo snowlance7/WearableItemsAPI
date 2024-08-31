@@ -105,28 +105,7 @@ namespace WearableItemsAPI
 
             parentObject = wornPos;
             base.gameObject.GetComponent<Collider>().enabled = false;
-            //ScanNode.enabled = false; // TODO: This isnt working, figure out how to make it unscannable to other players
-
-            WearServerRpc(playerWornBy.actualClientId, WearSlot, showWearable, wearablePositionOffset, wearableRotationOffset);
-        }
-
-        public virtual void Wear(PlayerControllerB player) // TODO: Make sure showWearableOnClient works
-        {
-            playerWornBy = player;
-
-            if (!SetWearSlot(WearSlot, this))
-            {
-                HUDManager.Instance.DisplayTip("Cant wear item", "You are already wearing an item of that type", true);
-                return;
-            }
-
-            if (playerHeldBy != null)
-            {
-                playerHeldBy.DiscardHeldObject(false, playerHeldBy.NetworkObject);
-            }
-
-            parentObject = wornPos;
-            base.gameObject.GetComponent<Collider>().enabled = false;
+            EnableItemMeshes(showWearableOnClient);
             //ScanNode.enabled = false; // TODO: This isnt working, figure out how to make it unscannable to other players
 
             WearServerRpc(playerWornBy.actualClientId, WearSlot, showWearable, wearablePositionOffset, wearableRotationOffset);
