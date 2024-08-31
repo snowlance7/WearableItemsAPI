@@ -95,7 +95,11 @@ namespace WearableItemsAPI
                 return;
             }
 
-            SetWearSlot(WearSlot, this);
+            if (!SetWearSlot(WearSlot, this))
+            {
+                HUDManager.Instance.DisplayTip("Cant wear item", "You are already wearing an item of that type", true);
+                return;
+            }
 
             playerHeldBy.DiscardHeldObject(false, playerHeldBy.NetworkObject);
 
@@ -110,7 +114,11 @@ namespace WearableItemsAPI
         {
             playerWornBy = player;
 
-            SetWearSlot(WearSlot, this);
+            if (!SetWearSlot(WearSlot, this))
+            {
+                HUDManager.Instance.DisplayTip("Cant wear item", "You are already wearing an item of that type", true);
+                return;
+            }
 
             if (playerHeldBy != null)
             {
@@ -129,12 +137,12 @@ namespace WearableItemsAPI
             UnwearServerRpc(grabItem);
         }
 
-        public void SetWearSlot(WearableSlot slot, GrabbableObject? itemToSlot = null)
+        public bool SetWearSlot(WearableSlot slot, GrabbableObject? itemToSlot = null)
         {
             if (playerWornBy == null)
             {
                 LoggerInstance.LogError("PlayerWornBy is null");
-                return;
+                return false;
             }
 
             WearSlot = slot;
@@ -144,30 +152,60 @@ namespace WearableItemsAPI
             {
                 case WearableSlot.Head:
                     if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[0]; }
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.HeadItem = itemToSlot; }
+                    if (playerWornBy == localPlayer)
+                    {
+                        if (itemToSlot == null) { WearableUIController.Instance.HeadItem = itemToSlot; }
+                        else if (WearableUIController.Instance.HeadItem == null) { WearableUIController.Instance.HeadItem = itemToSlot; }
+                        else { return false; }
+                    }
                     break;
                 case WearableSlot.RightArm:
                     if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[1]; }
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.RightArmItem = itemToSlot; }
+                    if (playerWornBy == localPlayer)
+                    {
+                        if (itemToSlot == null) { WearableUIController.Instance.RightArmItem = itemToSlot; }
+                        else if (WearableUIController.Instance.RightArmItem == null) { WearableUIController.Instance.RightArmItem = itemToSlot; }
+                        else { return false; }
+                    }
                     break;
                 case WearableSlot.LeftArm:
                     if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[2]; }
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.LeftArmItem = itemToSlot; }
+                    if (playerWornBy == localPlayer)
+                    {
+                        if (itemToSlot == null) { WearableUIController.Instance.LeftArmItem = itemToSlot; }
+                        else if (WearableUIController.Instance.LeftArmItem == null) { WearableUIController.Instance.LeftArmItem = itemToSlot; }
+                        else { return false; }
+                    }
                     break;
                 case WearableSlot.BothArms:
                     //bodyPos = playerWornBy.bodyParts[];
                     break;
                 case WearableSlot.Chest:
                     if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[5]; }
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.ChestItem = itemToSlot; }
+                    if (playerWornBy == localPlayer)
+                    {
+                        if (itemToSlot == null) { WearableUIController.Instance.ChestItem = itemToSlot; }
+                        else if (WearableUIController.Instance.ChestItem == null) { WearableUIController.Instance.ChestItem = itemToSlot; }
+                        else { return false; }
+                    }
                     break;
                 case WearableSlot.Legs:
                     if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[8]; }
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.LegsItem = itemToSlot; }
+                    if (playerWornBy == localPlayer)
+                    {
+                        if (itemToSlot == null) { WearableUIController.Instance.LegsItem = itemToSlot; }
+                        else if (WearableUIController.Instance.LegsItem == null) { WearableUIController.Instance.LegsItem = itemToSlot; }
+                        else { return false; }
+                    }
                     break;
                 case WearableSlot.Feet:
                     if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[6]; }
-                    if (playerWornBy == localPlayer) { WearableUIController.Instance.FeetItem = itemToSlot; }
+                    if (playerWornBy == localPlayer)
+                    {
+                        if (itemToSlot == null) { WearableUIController.Instance.FeetItem = itemToSlot; }
+                        else if (WearableUIController.Instance.FeetItem == null) { WearableUIController.Instance.FeetItem = itemToSlot; }
+                        else { return false; }
+                    }
                     break;
                 case WearableSlot.None:
                     if (itemToSlot != null) { wornPos = playerWornBy.transform; }
@@ -177,6 +215,8 @@ namespace WearableItemsAPI
                     LoggerInstance.LogError("Wearslot not found");
                     break;
             }
+
+            return true;
         }
 
         // RPCs
