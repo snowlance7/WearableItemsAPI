@@ -5,7 +5,7 @@
         <AssemblyName>Snowlance.WearableItemsAPI</AssemblyName>
         <Product>WearableItemsAPI</Product>
         <!-- Change to whatever version you're currently on. -->
-        <Version>0.1.7</Version>
+        <Version>0.1.8</Version>
     </PropertyGroup>
 
     <!-- Project Properties -->
@@ -92,7 +92,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>WearableItemsAPI</PackageId>
-    <Version>0.1.7</Version>
+    <Version>0.1.8</Version>
     <Authors>snowlance7</Authors>
     <Description>A customizable API for wearable items for Lethal Company</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

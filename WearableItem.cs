@@ -49,13 +49,9 @@ namespace WearableItemsAPI
         public override void Update()
         {
             base.Update();
-            if (playerWornBy != null)
+            if (playerWornBy != null && playerWornBy.isPlayerDead)
             {
-                if (playerWornBy.isPlayerDead)
-                {
-                    UnWear();
-                    return;
-                }
+                UnWear(grabItem: false);
             }
         }
 
@@ -113,7 +109,7 @@ namespace WearableItemsAPI
 
         public virtual void UnWear(bool grabItem = true)
         {
-            UnwearServerRpc(grabItem);
+            UnwearServerRpc(false);
         }
 
         public bool SetWearSlot(WearableSlot slot, GrabbableObject? itemToSlot = null)
@@ -236,18 +232,40 @@ namespace WearableItemsAPI
         [ClientRpc]
         private void UnwearClientRpc(bool grabItem = true)
         {
-            parentObject = null;
-
-            if (playerWornBy != null && playerWornBy == localPlayer)
+            if (playerWornBy != null)
             {
                 SetWearSlot(WearSlot, null);
 
-                if (!playerWornBy.isPlayerDead && grabItem)
+                if (playerWornBy.isPlayerDead || !grabItem)
                 {
-                    LoggerInstance.LogDebug("Grabbing " + itemProperties.itemName);
-                    playerWornBy.GrabObjectServerRpc(NetworkObject);
-                    parentObject = playerWornBy.localItemHolder;
-                    GrabItemOnClient();
+                    LoggerInstance.LogDebug("Player is dead");
+
+                    parentObject = null;
+                    if (playerWornBy.isInElevator)
+                    {
+                        base.transform.SetParent(playerWornBy.playersManager.elevatorTransform, true);
+                    }
+                    else
+                    {
+                        base.transform.SetParent(playerWornBy.playersManager.propsContainer, true);
+                    }
+                    playerWornBy.SetItemInElevator(playerWornBy.isInHangarShipRoom, playerWornBy.isInElevator, this);
+                    EnablePhysics(true);
+                    EnableItemMeshes(true);
+                    startFallingPosition = this.transform.parent.InverseTransformPoint(this.transform.position);
+                    FallToGround(true);
+                    fallTime = 0f;
+                }
+
+                if (playerWornBy == localPlayer)
+                {
+                    if (!playerWornBy.isPlayerDead && grabItem)
+                    {
+                        LoggerInstance.LogDebug("Grabbing " + itemProperties.itemName);
+                        playerWornBy.GrabObjectServerRpc(NetworkObject);
+                        parentObject = playerWornBy.localItemHolder;
+                        GrabItemOnClient();
+                    }
                 }
             }
 
@@ -255,7 +273,6 @@ namespace WearableItemsAPI
             //ScanNode.enabled = true;
             EnableItemMeshes(true);
             playerWornBy = null;
-            wornPos = null;
         }
     }
 }
