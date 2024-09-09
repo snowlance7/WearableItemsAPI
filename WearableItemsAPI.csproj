@@ -92,7 +92,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>WearableItemsAPI</PackageId>
-    <Version>0.1.8</Version>
+    <Version>0.1.9</Version>
     <Authors>snowlance7</Authors>
     <Description>A customizable API for wearable items for Lethal Company</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

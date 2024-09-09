@@ -77,7 +77,7 @@ namespace WearableItemsAPI
             }
         }
 
-        public virtual void Wear() // TODO: Make sure showWearableOnClient works
+        public virtual void Wear()
         {
             LoggerInstance.LogDebug("Wearing " + itemProperties.itemName);
 
@@ -109,7 +109,7 @@ namespace WearableItemsAPI
 
         public virtual void UnWear(bool grabItem = true)
         {
-            UnwearServerRpc(false);
+            UnwearServerRpc(grabItem);
         }
 
         public bool SetWearSlot(WearableSlot slot, GrabbableObject? itemToSlot = null)
