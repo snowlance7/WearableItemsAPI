@@ -366,3 +366,5 @@ FodyWeavers.xsd
 /ThunderStore/manifest.json
 /ThunderStore/README.md
 /ThunderStore/LICENSE
+/ThunderStore/WearableItemsAPI/Snowlance.WearableItemsAPI.dll
+/ThunderStore/WearableItemsAPI/wearable_items_assets
