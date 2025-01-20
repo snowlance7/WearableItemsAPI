@@ -49,7 +49,7 @@ namespace WearableItemsAPI
         public override void Update()
         {
             base.Update();
-            if (playerWornBy != null && playerWornBy.isPlayerDead)
+            if (playerWornBy != null && (playerWornBy.isPlayerDead || playerWornBy.disconnectedMidGame))
             {
                 UnWear(grabItem: false);
             }
@@ -103,6 +103,8 @@ namespace WearableItemsAPI
             base.gameObject.GetComponent<Collider>().enabled = false;
             EnableItemMeshes(showWearableOnClient);
             //ScanNode.enabled = false; // TODO: This isnt working, figure out how to make it unscannable to other players
+
+            HUDManager.Instance.DisplayTip("Wearable Items", $"Press I to open the Wearable Items inventory", false, true, "WearableItems_Tip1");
 
             WearServerRpc(playerWornBy.actualClientId, WearSlot, showWearable, wearablePositionOffset, wearableRotationOffset);
         }

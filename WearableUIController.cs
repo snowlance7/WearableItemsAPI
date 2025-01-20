@@ -30,6 +30,8 @@ namespace WearableItemsAPI
         public GrabbableObject LegsItem;
         public GrabbableObject FeetItem;
 
+        public string openUIKeybind = "";
+
         /* bodyparts
          * 0 head
          * 1 right arm
@@ -152,6 +154,8 @@ namespace WearableItemsAPI
             btnLegs.clickable.clicked += () => ButtonLegsClicked();
             btnFeet.clickable.clicked += () => ButtonFeetClicked();
 
+            openUIKeybind = InputControlPath.ToHumanReadableString(WearableItemsInputs.Instance.OpenUIKey.bindings[0].path, InputControlPath.HumanReadableStringOptions.OmitDevice);
+
             logger.LogDebug("UIControllerScript: Start() complete");
         }
 
@@ -163,6 +167,11 @@ namespace WearableItemsAPI
             {
                 if (veMain.style.display == DisplayStyle.None) { ShowUI(); }
                 else { HideUI(); }
+            }
+
+            if (configShowTooltip.Value)
+            {
+                HUDManager.Instance.ChangeControlTip(HUDManager.Instance.controlTipLines.Length - 1, $"Breath [{openUIKeybind}]");
             }
         }
 

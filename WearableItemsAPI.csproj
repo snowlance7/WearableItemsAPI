@@ -5,7 +5,7 @@
         <AssemblyName>Snowlance.WearableItemsAPI</AssemblyName>
         <Product>WearableItemsAPI</Product>
         <!-- Change to whatever version you're currently on. -->
-        <Version>0.1.8</Version>
+        <Version>0.1.10</Version>
     </PropertyGroup>
 
     <!-- Project Properties -->
@@ -61,7 +61,7 @@
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all" />
-        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="*-*" Publicize="true" PrivateAssets="all" />
+        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="67.0.0-ngd.0" Publicize="true" PrivateAssets="all" />
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" PrivateAssets="all" />
     </ItemGroup>
 
@@ -71,7 +71,6 @@
 
     <ItemGroup>
       <Folder Include="Assets\" />
-      <Folder Include="ThunderStore\WearableItemsAPI\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -92,7 +91,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>WearableItemsAPI</PackageId>
-    <Version>0.1.9</Version>
+    <Version>0.1.10</Version>
     <Authors>snowlance7</Authors>
     <Description>A customizable API for wearable items for Lethal Company</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

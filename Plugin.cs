@@ -29,7 +29,10 @@ namespace WearableItemsAPI
         public static ConfigEntry<int> configSpaceBetweenHeadAndChest;
         public static ConfigEntry<int> configSpaceBetweenChestAndLegs;
         public static ConfigEntry<int> configSpaceBetweenLegsAndFeet;
-        
+
+        public static ConfigEntry<bool> configShowTooltip;
+
+
 
         private void Awake()
         {
@@ -56,6 +59,8 @@ namespace WearableItemsAPI
             configSpaceBetweenHeadAndChest = Config.Bind("UI Settings", "SpaceBetweenHeadAndChest", 0, "Space between head and chest");
             configSpaceBetweenChestAndLegs = Config.Bind("UI Settings", "SpaceBetweenChestAndLegs", 0, "Space between chest and legs");
             configSpaceBetweenLegsAndFeet = Config.Bind("UI Settings", "SpaceBetweenLegsAndFeet", 0, "Space between legs and feet");
+
+            configShowTooltip = Config.Bind("General", "Show Tooltip", true, "Setting this to true adds a tooltip on the top right for how to open the inventory");
 
 
             // Loading Assets
