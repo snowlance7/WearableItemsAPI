@@ -5,7 +5,7 @@
         <AssemblyName>Snowlance.WearableItemsAPI</AssemblyName>
         <Product>WearableItemsAPI</Product>
         <!-- Change to whatever version you're currently on. -->
-        <Version>0.1.10</Version>
+        <Version>0.1.11</Version>
     </PropertyGroup>
 
     <!-- Project Properties -->
@@ -54,6 +54,9 @@
     <ItemGroup>
       <Compile Include="obj\Debug\netstandard2.1\MyPluginInfo.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <Content Include="bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI.deps.json" />
+    </ItemGroup>
 
     <!-- Primary Package References -->
     <ItemGroup>
@@ -91,7 +94,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>WearableItemsAPI</PackageId>
-    <Version>0.1.10</Version>
+    <Version>0.1.11</Version>
     <Authors>snowlance7</Authors>
     <Description>A customizable API for wearable items for Lethal Company</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -103,6 +106,17 @@
 
 
   <ItemGroup>
+    <None Include="bin\Debug\netstandard2.1\LethalCompanyInputUtils.dll" />
+    <None Include="bin\Debug\netstandard2.1\LethalConfig.dll" />
+    <None Include="bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI.dll" />
+    <None Include="bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI_original.dll" />
+    <None Include="bin\Debug\WearableItemsAPI.0.1.10.nupkg" />
+    <None Include="bin\Debug\WearableItemsAPI.0.1.4.nupkg" />
+    <None Include="bin\Debug\WearableItemsAPI.0.1.5.nupkg" />
+    <None Include="bin\Debug\WearableItemsAPI.0.1.6.nupkg" />
+    <None Include="bin\Debug\WearableItemsAPI.0.1.7.nupkg" />
+    <None Include="bin\Debug\WearableItemsAPI.0.1.8.nupkg" />
+    <None Include="bin\Debug\WearableItemsAPI.0.1.9.nupkg" />
     <None Include="ThunderStore\icon.png" Pack="true" Visible="false" PackagePath="" />
     <None Include="ThunderStore\README.md" Pack="true" PackagePath="" />
   </ItemGroup>

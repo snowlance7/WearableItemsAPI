@@ -156,6 +156,8 @@ namespace WearableItemsAPI
 
             openUIKeybind = InputControlPath.ToHumanReadableString(WearableItemsInputs.Instance.OpenUIKey.bindings[0].path, InputControlPath.HumanReadableStringOptions.OmitDevice);
 
+            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {openUIKeybind} to open Wearable Items UI Inventory", false, true, "LC_WearableItemsAPI");
+
             logger.LogDebug("UIControllerScript: Start() complete");
         }
 
@@ -171,7 +173,7 @@ namespace WearableItemsAPI
 
             if (configShowTooltip.Value)
             {
-                HUDManager.Instance.ChangeControlTip(HUDManager.Instance.controlTipLines.Length - 1, $"Breath [{openUIKeybind}]");
+                HUDManager.Instance.ChangeControlTip(HUDManager.Instance.controlTipLines.Length - 1, $"Open Wearables UI [{openUIKeybind}]");
             }
         }
 
