@@ -1,0 +1,32 @@
+{
+    "UxmlGuid": "50e77ca805c23a241bd787b54f47a174",
+    "UxmlPath": "Assets/InventoryUI.uxml",
+    "CanvasX": 0,
+    "CanvasY": 0,
+    "CanvasWidth": 789,
+    "CanvasHeight": 444,
+    "MatchGameView": true,
+    "ZoomScale": 0.8999999761581421,
+    "PanOffset": {
+        "x": 73.52182006835938,
+        "y": 166.8756103515625
+    },
+    "ColorModeBackgroundOpacity": 1.0,
+    "ImageModeCanvasBackgroundOpacity": 1.0,
+    "CameraModeCanvasBackgroundOpacity": 1.0,
+    "EnableCanvasBackground": false,
+    "CanvasBackgroundMode": 1,
+    "CanvasBackgroundColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 1.0
+    },
+    "CanvasBackgroundImage": {
+        "fileID": 2800000,
+        "guid": "e810ac22ccab4f9468ad515735723141",
+        "type": 3
+    },
+    "CanvasBackgroundImageScaleMode": 1,
+    "CanvasBackgroundCameraName": ""
+}

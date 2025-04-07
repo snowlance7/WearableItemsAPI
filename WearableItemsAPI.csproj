@@ -45,6 +45,11 @@
         <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
     </PropertyGroup>
     <ItemGroup>
+      <Compile Remove="WearableItemsAPIUnityProject\**" />
+      <EmbeddedResource Remove="WearableItemsAPIUnityProject\**" />
+      <None Remove="WearableItemsAPIUnityProject\**" />
+    </ItemGroup>
+    <ItemGroup>
       <Compile Remove="C:\Users\snowl\.nuget\packages\bepinex.assemblypublicizer.msbuild\0.4.1\contentFiles\cs\any\IgnoresAccessChecksToAttribute.cs" />
     </ItemGroup>
     <ItemGroup>
