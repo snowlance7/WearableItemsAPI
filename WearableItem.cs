@@ -23,6 +23,7 @@ namespace WearableItemsAPI
          * 10 right shoulder */
 
         public PlayerControllerB? playerWornBy;
+        public PlayerControllerB? lastPlayerWornBy { get; private set; }
 
         private Transform? wornPos;
 
@@ -38,9 +39,9 @@ namespace WearableItemsAPI
             Feet
         }
 
-        public WearableSlot WearSlot;
-        public Vector3 wearablePositionOffset;
-        public Vector3 wearableRotationOffset;
+        public WearableSlot WornSlot;
+        public Vector3 wornPositionOffset;
+        public Vector3 wornRotationOffset;
         public bool showWearable;
         public bool showWearableOnClient;
 
@@ -49,10 +50,13 @@ namespace WearableItemsAPI
         public override void Update()
         {
             base.Update();
-            if (playerWornBy != null && (playerWornBy.isPlayerDead || playerWornBy.disconnectedMidGame))
+            if (playerWornBy == null || !playerWornBy.isPlayerControlled)
             {
                 UnWear(grabItem: false);
+                return;
             }
+
+            lastPlayerWornBy = playerWornBy;
         }
 
         public override void LateUpdate()
@@ -60,9 +64,9 @@ namespace WearableItemsAPI
             if (parentObject != null && playerWornBy != null)
             {
                 base.transform.rotation = parentObject.rotation;
-                base.transform.Rotate(wearableRotationOffset);
+                base.transform.Rotate(wornRotationOffset);
                 base.transform.position = parentObject.position;
-                Vector3 positionOffset = wearablePositionOffset;
+                Vector3 positionOffset = wornPositionOffset;
                 positionOffset = parentObject.rotation * positionOffset;
                 base.transform.position += positionOffset;
 
@@ -91,7 +95,7 @@ namespace WearableItemsAPI
                 return;
             }
 
-            if (!SetWearSlot(WearSlot, this))
+            if (!SetWearSlot(WornSlot, this))
             {
                 HUDManager.Instance.DisplayTip("Cant wear item", "You are already wearing an item of that type", true);
                 return;
@@ -106,7 +110,7 @@ namespace WearableItemsAPI
 
             HUDManager.Instance.DisplayTip("Wearable Items", $"Press I to open the Wearable Items inventory", false, true, "WearableItems_Tip1");
 
-            WearServerRpc(playerWornBy.actualClientId, WearSlot, showWearable, wearablePositionOffset, wearableRotationOffset);
+            WearServerRpc(playerWornBy.actualClientId, WornSlot, showWearable, wornPositionOffset, wornRotationOffset);
         }
 
         public virtual void UnWear(bool grabItem = true)
@@ -122,10 +126,10 @@ namespace WearableItemsAPI
                 return false;
             }
 
-            WearSlot = slot;
+            WornSlot = slot;
             wornPos = null;
 
-            switch (WearSlot)
+            switch (WornSlot)
             {
                 case WearableSlot.Head:
                     if (itemToSlot != null) { wornPos = playerWornBy.bodyParts[0]; }
@@ -214,8 +218,8 @@ namespace WearableItemsAPI
             playerWornBy = StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == clientId).First();
             SetWearSlot(slot, this);
             EnableItemMeshes(_showWearable);
-            wearablePositionOffset = _wearablePositionOffset;
-            wearableRotationOffset = _wearableRotationOffset;
+            wornPositionOffset = _wearablePositionOffset;
+            wornRotationOffset = _wearableRotationOffset;
 
             parentObject = wornPos;
             base.gameObject.GetComponent<Collider>().enabled = false;
@@ -236,7 +240,7 @@ namespace WearableItemsAPI
         {
             if (playerWornBy != null)
             {
-                SetWearSlot(WearSlot, null);
+                SetWearSlot(WornSlot, null);
 
                 if (playerWornBy.isPlayerDead || !grabItem)
                 {

@@ -13,13 +13,16 @@ namespace WearableItemsAPI
     [BepInDependency(LethalCompanyInputUtils.PluginInfo.PLUGIN_GUID)]
     internal class Plugin : BaseUnityPlugin
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         internal static Plugin PluginInstance;
         internal static ManualLogSource LoggerInstance;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         internal static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
 
         public static AssetBundle? ModAssets;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public static ConfigEntry<int> configUIPositionX;
         public static ConfigEntry<int> configUIPositionY;
         public static ConfigEntry<int> configUIWidth;
@@ -31,8 +34,7 @@ namespace WearableItemsAPI
         public static ConfigEntry<int> configSpaceBetweenLegsAndFeet;
 
         public static ConfigEntry<bool> configShowTooltip;
-
-
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         private void Awake()
         {
