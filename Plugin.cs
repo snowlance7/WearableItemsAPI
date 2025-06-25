@@ -4,7 +4,9 @@ using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace WearableItemsAPI
@@ -18,7 +20,10 @@ namespace WearableItemsAPI
         internal static ManualLogSource LoggerInstance;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
-        internal static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
+        public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
+        public static PlayerControllerB PlayerFromId(ulong id) { return StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == id).First(); }
+
+        public static bool IsServerOrHost { get { return NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost; } }
 
         public static AssetBundle? ModAssets;
 
@@ -75,6 +80,8 @@ namespace WearableItemsAPI
                 return;
             }
             LoggerInstance.LogDebug($"Got AssetBundle at: {Path.Combine(sAssemblyLocation, "wearable_items_assets")}");
+
+            WearableUIController.Prefab = ModAssets.LoadAsset<GameObject>("Assets/ModAssets/WearableItemsUI.prefab");
 
             // Finished
             Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");

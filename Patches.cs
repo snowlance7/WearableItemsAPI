@@ -14,8 +14,7 @@ namespace WearableItemsAPI
         private static bool OpenQuickMenuPatch()
         {
             if (WearableUIController.Instance == null) { return true; }
-            if (WearableUIController.Instance.veMain == null) { logger.LogError("veMain is null!"); return true; }
-            if (WearableUIController.Instance.veMain.style.display == DisplayStyle.Flex) { return false; }
+            if (WearableUIController.Instance.IsUIOpen) { return false; }
             return true;
         }
 
