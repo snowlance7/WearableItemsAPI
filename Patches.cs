@@ -7,7 +7,7 @@ namespace WearableItemsAPI
     [HarmonyPatch]
     internal class Patches
     {
-        private static ManualLogSource logger = Plugin.LoggerInstance;
+        private static ManualLogSource logger = Plugin.logger;
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.OpenQuickMenu))]

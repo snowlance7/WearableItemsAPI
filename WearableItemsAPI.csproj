@@ -45,22 +45,22 @@
         <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
     </PropertyGroup>
     <ItemGroup>
+      <Compile Remove="bin\**" />
       <Compile Remove="WearableItemsAPIUnityProject\**" />
+      <EmbeddedResource Remove="bin\**" />
       <EmbeddedResource Remove="WearableItemsAPIUnityProject\**" />
+      <None Remove="bin\**" />
       <None Remove="WearableItemsAPIUnityProject\**" />
     </ItemGroup>
     <ItemGroup>
-      <Compile Remove="C:\Users\snowl\.nuget\packages\bepinex.assemblypublicizer.msbuild\0.4.1\contentFiles\cs\any\IgnoresAccessChecksToAttribute.cs" />
+      <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\AssetBundles\ui-assets" />
+      <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\en_US.json" />
+      <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\ru_RU.json" />
+      <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\zh_CN.json" />
     </ItemGroup>
     <ItemGroup>
       <None Remove=".gitattributes" />
       <None Remove=".gitignore" />
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Include="obj\Debug\netstandard2.1\MyPluginInfo.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI.deps.json" />
     </ItemGroup>
 
     <!-- Primary Package References -->
@@ -69,8 +69,9 @@
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all" />
-        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="67.0.0-ngd.0" Publicize="true" PrivateAssets="all" />
-        <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" PrivateAssets="all" />
+        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="81.0.0-ngd.0" Publicize="true" PrivateAssets="all" />
+        <PackageReference Include="Rune580.Mods.LethalCompany.InputUtils" Version="0.7.13" />
+        <PackageReference Include="UnityEngine.Modules" Version="2022.3.62" IncludeAssets="compile" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -80,22 +81,20 @@
     <ItemGroup>
       <Folder Include="Assets\" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="LethalCompanyInputUtils">
-        <HintPath>..\1Resources\1Assemblies\LethalCompanyInputUtils.dll</HintPath>
-      </Reference>
-    </ItemGroup>
+  
+  <PropertyGroup>
+    <GeneratePluginInfo>true</GeneratePluginInfo>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+  </PropertyGroup>
 
     <!-- Netcode Patcher Post-Build Event -->
-    <Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
-        <Exec Command="dotnet netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')" />
-    </Target>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="xcopy &quot;C:\Users\snowl\source\repos\WearableItemsAPI\Assets\wearable_items_assets&quot; &quot;C:\Users\snowl\source\repos\1Lethal Company Debugging\BepInEx\plugins&quot; /Y" />
-    </Target>
+  <Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
+    <Exec Command="netcode-patch -uv 2022.3.62 -nv 1.12.0 -tv 1.0.0 &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')" />
+  </Target>
   
-    <!-- NuGet Stuff -->
+    <!-- NuGet Stuff --><!--
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>WearableItemsAPI</PackageId>
@@ -107,22 +106,5 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
-
-
-  <ItemGroup>
-    <None Include="bin\Debug\netstandard2.1\LethalCompanyInputUtils.dll" />
-    <None Include="bin\Debug\netstandard2.1\LethalConfig.dll" />
-    <None Include="bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI.dll" />
-    <None Include="bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI_original.dll" />
-    <None Include="bin\Debug\WearableItemsAPI.0.1.10.nupkg" />
-    <None Include="bin\Debug\WearableItemsAPI.0.1.4.nupkg" />
-    <None Include="bin\Debug\WearableItemsAPI.0.1.5.nupkg" />
-    <None Include="bin\Debug\WearableItemsAPI.0.1.6.nupkg" />
-    <None Include="bin\Debug\WearableItemsAPI.0.1.7.nupkg" />
-    <None Include="bin\Debug\WearableItemsAPI.0.1.8.nupkg" />
-    <None Include="bin\Debug\WearableItemsAPI.0.1.9.nupkg" />
-    <None Include="ThunderStore\icon.png" Pack="true" Visible="false" PackagePath="" />
-    <None Include="ThunderStore\README.md" Pack="true" PackagePath="" />
-  </ItemGroup>
+  </PropertyGroup>-->
 </Project>

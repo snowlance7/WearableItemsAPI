@@ -61,3 +61,13 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+# Treat all text files as text and normalize line endings
+* text=auto
+
+# Unity specific
+*.cs text eol=lf
+*.shader text eol=lf
+*.asmdef text eol=lf
+*.meta text eol=lf
+*.unity text eol=lf
+*.prefab text eol=lf

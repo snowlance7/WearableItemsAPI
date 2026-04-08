@@ -11,8 +11,6 @@ namespace WearableItemsAPI
 {
     public class WearableItem : PhysicsProp
     {
-        private static ManualLogSource logger = Plugin.LoggerInstance;
-
         public PlayerControllerB? playerWornBy { get; private set; }
         public PlayerControllerB? lastPlayerWornBy { get; private set; }
 
@@ -45,11 +43,9 @@ namespace WearableItemsAPI
          * 9 left shoulder
          * 10 right shoulder */
 
-        //internal static HashSet<string> AllRestrictions = [];
-        //public string Restriction = "";
-        //public string[] SubRestrictions = [];
+        public string Restriction = "";
 
-        public ScanNodeProperties? ScanNode;
+        ScanNodeProperties? scanNode;
         public WearableSlot WornSlot = WearableSlot.None;
         public Vector3 wornPositionOffset = Vector3.zero;
         public Vector3 wornRotationOffset = Vector3.zero;
@@ -59,8 +55,7 @@ namespace WearableItemsAPI
         public override void Start()
         {
             base.Start();
-            //Restriction = Regex.Replace(Restriction, @"\s+", "").ToLower();
-            //SubRestrictions = SubRestrictions.Select(s => Regex.Replace(s, @"\s+", "").ToLower()).ToArray();
+            scanNode = base.gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 
         public override void Update()
@@ -72,7 +67,7 @@ namespace WearableItemsAPI
 
                 if (!playerWornBy.isPlayerControlled)
                 {
-                    UnWear(grabItem: false);
+                    UnWear();
                     return;
                 }
             }
@@ -100,29 +95,29 @@ namespace WearableItemsAPI
             }
         }
 
-        public virtual void Wear(ulong clientId)
+        public virtual void Wear(PlayerControllerB player)
         {
-            LoggerInstance.LogDebug("Wearing " + itemProperties.itemName);
+            logger.LogDebug("Wearing " + itemProperties.itemName);
 
-            playerWornBy = PlayerFromId(clientId);
+            playerWornBy = player;
             playerWornBy.DiscardHeldObject(false, playerWornBy.NetworkObject);
 
             parentObject = WornSlot == WearableSlot.None ? playerWornBy.transform : playerWornBy.bodyParts[(int)WornSlot];
             base.gameObject.GetComponent<Collider>().enabled = false;
             bool _showWearable = localPlayer == playerWornBy ? showWearableOnClient : showWearable;
             EnableItemMeshes(_showWearable);
-            ScanNode?.gameObject.SetActive(false);
+            scanNode?.gameObject.SetActive(false);
 
-            HUDManager.Instance.DisplayTip("Wearable Items", $"Press I to open the Wearable Items inventory", false, true, "WearableItemsTip1");
+            HUDManager.Instance.DisplayTip("Wearable Items", $"Press {WearableItemsInputs.Instance.OpenUIKey.activeControl.displayName} to open the Wearable Items inventory", false, true, "WearableItemsTip1"); // TODO: Test this
         }
 
-        public virtual void UnWear(bool grabItem = true)
+        public virtual void UnWear()
         {
             if (playerWornBy != null)
             {
-                if (!playerWornBy.isPlayerControlled || !grabItem)
+                if (!playerWornBy.isPlayerControlled)
                 {
-                    LoggerInstance.LogDebug("Player is dead");
+                    logger.LogDebug("Player is dead, unwearing item");
 
                     parentObject = null;
                     if (playerWornBy.isInElevator)
@@ -142,9 +137,9 @@ namespace WearableItemsAPI
 
                 if (playerWornBy == localPlayer)
                 {
-                    if (playerWornBy.isPlayerControlled && grabItem)
+                    if (playerWornBy.isPlayerControlled)
                     {
-                        LoggerInstance.LogDebug("Grabbing " + itemProperties.itemName);
+                        logger.LogDebug("Grabbing " + itemProperties.itemName);
                         playerWornBy.GrabObjectServerRpc(NetworkObject);
                         parentObject = playerWornBy.localItemHolder;
                         GrabItemOnClient();
@@ -153,7 +148,7 @@ namespace WearableItemsAPI
             }
 
             base.gameObject.GetComponent<Collider>().enabled = true;
-            ScanNode?.gameObject.SetActive(true);
+            scanNode?.gameObject.SetActive(true);
             EnableItemMeshes(true);
             playerWornBy = null;
         }
@@ -170,20 +165,21 @@ namespace WearableItemsAPI
         [ClientRpc]
         public void WearClientRpc(ulong clientId)
         {
-            Wear(clientId);
+            PlayerControllerB player = PlayerFromId(clientId);
+            Wear(player);
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void UnwearServerRpc(bool grabItem = true)
+        public void UnwearServerRpc()
         {
-            if (!IsServerOrHost) { return; }
-            UnwearClientRpc(grabItem);
+            if (!IsServer) { return; }
+            UnwearClientRpc();
         }
 
         [ClientRpc]
-        public void UnwearClientRpc(bool grabItem = true)
+        public void UnwearClientRpc()
         {
-            UnWear(grabItem);
+            UnWear();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace WearableItemsAPI
 {
     internal class WearableUIController : MonoBehaviour
     {
-        private static ManualLogSource logger = Plugin.LoggerInstance;
+        private static ManualLogSource logger = Plugin.logger;
 
         /*private static WearableUIController? _instance;
         public static WearableUIController Instance
@@ -97,10 +97,10 @@ namespace WearableItemsAPI
                 else { HideUI(); }
             }
 
-            if (configShowTooltip.Value)
+            /*if (configShowTooltip.Value)
             {
                 HUDManager.Instance.ChangeControlTip(HUDManager.Instance.controlTipLines.Length - 1, $"Open Wearables UI [{OpenUIKeybind}]"); // TODO
-            }
+            }*/
         }
 
         public void ShowUI()

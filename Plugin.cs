@@ -1,5 +1,4 @@
 using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
@@ -12,13 +11,13 @@ using UnityEngine;
 namespace WearableItemsAPI
 {
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-    [BepInDependency(LethalCompanyInputUtils.PluginInfo.PLUGIN_GUID)]
+    [BepInDependency(LethalCompanyInputUtils.MyPluginInfo.PLUGIN_GUID)]
     internal class Plugin : BaseUnityPlugin
     {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        internal static Plugin PluginInstance;
-        internal static ManualLogSource LoggerInstance;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+#pragma warning disable CS8618
+        internal static Plugin Instance;
+        internal static ManualLogSource logger;
+#pragma warning restore CS8618
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
         public static PlayerControllerB PlayerFromId(ulong id) { return StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == id).First(); }
@@ -27,48 +26,20 @@ namespace WearableItemsAPI
 
         public static AssetBundle? ModAssets;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        public static ConfigEntry<int> configUIPositionX;
-        public static ConfigEntry<int> configUIPositionY;
-        public static ConfigEntry<int> configUIWidth;
-        public static ConfigEntry<int> configUIHeight;
-        public static ConfigEntry<bool> configArmSpacing;
-        public static ConfigEntry<int> configSpaceBetweenArms;
-        public static ConfigEntry<int> configSpaceBetweenHeadAndChest;
-        public static ConfigEntry<int> configSpaceBetweenChestAndLegs;
-        public static ConfigEntry<int> configSpaceBetweenLegsAndFeet;
-
-        public static ConfigEntry<bool> configShowTooltip;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-
         private void Awake()
         {
-            if (PluginInstance == null)
+            if (Instance == null)
             {
-                PluginInstance = this;
+                Instance = this;
             }
 
-            LoggerInstance = PluginInstance.Logger;
+            logger = Instance.Logger;
 
             harmony.PatchAll();
 
             InitializeNetworkBehaviours();
 
             WearableItemsInputs.Init();
-
-            // Configs
-            configUIPositionX = Config.Bind("UI Settings", "UIPositionX", 0, "X Position of the UI");
-            configUIPositionY = Config.Bind("UI Settings", "UIPositionY", 100, "Y Position of the UI");
-            configUIWidth = Config.Bind("UI Settings", "UIWidth", 55, "Width of the UI");
-            configUIHeight = Config.Bind("UI Settings", "UIHeight", 55, "Height of the UI");
-            configArmSpacing = Config.Bind("UI Settings", "ArmSpacing", false, "Whether to add a gap between arm buttons");
-            configSpaceBetweenArms = Config.Bind("UI Settings", "SpaceBetweenArms", 2, "Extra spacing between arm buttons");
-            configSpaceBetweenHeadAndChest = Config.Bind("UI Settings", "SpaceBetweenHeadAndChest", 0, "Space between head and chest");
-            configSpaceBetweenChestAndLegs = Config.Bind("UI Settings", "SpaceBetweenChestAndLegs", 0, "Space between chest and legs");
-            configSpaceBetweenLegsAndFeet = Config.Bind("UI Settings", "SpaceBetweenLegsAndFeet", 0, "Space between legs and feet");
-
-            configShowTooltip = Config.Bind("General", "Show Tooltip", true, "Setting this to true adds a tooltip on the top right for how to open the inventory");
-
 
             // Loading Assets
             string sAssemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -79,7 +50,7 @@ namespace WearableItemsAPI
                 Logger.LogError($"Failed to load custom assets.");
                 return;
             }
-            LoggerInstance.LogDebug($"Got AssetBundle at: {Path.Combine(sAssemblyLocation, "wearable_items_assets")}");
+            logger.LogDebug($"Got AssetBundle at: {Path.Combine(sAssemblyLocation, "wearable_items_assets")}");
 
             WearableUIController.Prefab = ModAssets.LoadAsset<GameObject>("Assets/ModAssets/WearableItemsUI.prefab");
 
@@ -102,7 +73,7 @@ namespace WearableItemsAPI
                     }
                 }
             }
-            LoggerInstance.LogDebug("Finished initializing network behaviours");
+            logger.LogDebug("Finished initializing network behaviours");
         }
     }
 }

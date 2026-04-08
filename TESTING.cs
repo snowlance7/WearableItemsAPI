@@ -1,9 +1,5 @@
-using BepInEx.Logging;
-using DunGen;
 using HarmonyLib;
-using System.Collections.Generic;
 using System.Linq;
-using Unity.Netcode;
 using UnityEngine;
 using static WearableItemsAPI.Plugin;
 
@@ -25,26 +21,29 @@ namespace WearableItemsAPI
     [HarmonyPatch]
     public class TESTING : MonoBehaviour
     {
-        private static ManualLogSource logger = LoggerInstance;
+        public static bool localPlayerImmune = false;
+        public static string currentAnim = "";
 
         [HarmonyPostfix, HarmonyPatch(typeof(HUDManager), nameof(HUDManager.PingScan_performed))]
         public static void PingScan_performedPostFix()
         {
+            if (!Utils.isBeta) { return; }
             if (!Utils.testing) { return; }
 
-
+            logger.LogDebug("PingScanTestPerformed");
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(HUDManager), nameof(HUDManager.SubmitChat_performed))]
         public static void SubmitChat_performedPrefix(HUDManager __instance)
         {
+            if (!Utils.isBeta) { return; }
+            if (!IsServerOrHost) { return; }
             string msg = __instance.chatTextField.text;
             string[] args = msg.Split(" ");
-            logger.LogDebug(msg);
+            Plugin.logger.LogDebug(msg);
 
             switch (args[0])
             {
-
                 default:
                     Utils.ChatCommand(args);
                     break;
