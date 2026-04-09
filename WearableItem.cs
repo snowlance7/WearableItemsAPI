@@ -9,7 +9,7 @@ using static WearableItemsAPI.Plugin;
 
 namespace WearableItemsAPI
 {
-    public class WearableItem : PhysicsProp
+    public abstract class WearableItem : PhysicsProp
     {
         public PlayerControllerB? playerWornBy { get; private set; }
         public PlayerControllerB? lastPlayerWornBy { get; private set; }
@@ -46,7 +46,7 @@ namespace WearableItemsAPI
         public string Restriction = "";
 
         ScanNodeProperties? scanNode;
-        public WearableSlot WornSlot = WearableSlot.None;
+        public abstract WearableSlot WornSlot { get; }
         public Vector3 wornPositionOffset = Vector3.zero;
         public Vector3 wornRotationOffset = Vector3.zero;
         public bool showWearable = true;
@@ -158,7 +158,7 @@ namespace WearableItemsAPI
         [ServerRpc(RequireOwnership = false)]
         public void WearServerRpc(ulong clientId)
         {
-            if (!IsServerOrHost) { return; }
+            if (!IsServer) { return; }
             WearClientRpc(clientId);
         }
 

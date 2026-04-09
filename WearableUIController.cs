@@ -9,8 +9,6 @@ namespace WearableItemsAPI
 {
     internal class WearableUIController : MonoBehaviour
     {
-        private static ManualLogSource logger = Plugin.logger;
-
         /*private static WearableUIController? _instance;
         public static WearableUIController Instance
         {
@@ -30,12 +28,12 @@ namespace WearableItemsAPI
 
         public static string OpenUIKeybind => InputControlPath.ToHumanReadableString(WearableItemsInputs.Instance.OpenUIKey.bindings[0].path, InputControlPath.HumanReadableStringOptions.OmitDevice);
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+#pragma warning disable CS8618
         public static GameObject Prefab;
 
         public GameObject ButtonPrefab;
         public Animator uiAnimator;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+#pragma warning restore CS8618
 
         public List<WearableUIButton> wearableUIButtons = [];
 
@@ -111,9 +109,9 @@ namespace WearableItemsAPI
 
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
-            StartOfRound.Instance.localPlayerController.disableMoveInput = true;
-            StartOfRound.Instance.localPlayerController.disableInteract = true;
-            StartOfRound.Instance.localPlayerController.disableLookInput = true;
+            localPlayer.disableMoveInput = true;
+            localPlayer.disableInteract = true;
+            localPlayer.disableLookInput = true;
         }
 
         public void HideUI()
@@ -121,11 +119,13 @@ namespace WearableItemsAPI
             logger.LogDebug("Hiding UI");
             //veMain.style.display = DisplayStyle.None;
 
+
+
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
-            StartOfRound.Instance.localPlayerController.disableMoveInput = false;
-            StartOfRound.Instance.localPlayerController.disableInteract = false;
-            StartOfRound.Instance.localPlayerController.disableLookInput = false;
+            localPlayer.disableMoveInput = false;
+            localPlayer.disableInteract = false;
+            localPlayer.disableLookInput = false;
         }
     }
 }
