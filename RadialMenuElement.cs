@@ -2,21 +2,24 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using WearableItemsAPI;
 
 [AddComponentMenu("Radial Menu Element")]
 public class RadialMenuElement : MonoBehaviour
 {
-
     [HideInInspector]
     public RectTransform rt;
     [HideInInspector]
     public RadialMenu parentRM;
 
-    [Tooltip("Each radial element needs a button. This is generally a child one level below this primary radial element game object.")]
     public Button button;
 
-    [Tooltip("This is the text label that will appear in the center of the radial menu when this option is moused over. Best to keep it short.")]
     public string label;
+
+    public Image icon;
+
+    [HideInInspector]
+    public WearableObject item;
 
     [HideInInspector]
     public float angleMin, angleMax;
@@ -33,8 +36,8 @@ public class RadialMenuElement : MonoBehaviour
 
     private CanvasGroup cg;
 
-    void Awake() {
-
+    void Awake()
+    {
         rt = gameObject.GetComponent<RectTransform>();
 
         if (gameObject.GetComponent<CanvasGroup>() == null)
@@ -48,11 +51,10 @@ public class RadialMenuElement : MonoBehaviour
 
         if (button == null)
             Debug.LogError("Radial Menu: No button attached to " + gameObject.name + "!");
-
     }
 
-    void Start () {
-
+    void Start ()
+    {
         rt.rotation = Quaternion.Euler(0, 0, -angleOffset); //Apply rotation determined by the parent radial menu.
 
         //If we're using lazy selection, we don't want our normal mouse-over effects interfering, so we turn raycasts off.
@@ -83,11 +85,7 @@ public class RadialMenuElement : MonoBehaviour
 
             t.triggers.Add(enter);
             t.triggers.Add(exit);
-
-
-
         }
-
     }
 	
     //Used by the parent radial menu to set up all the approprate angles. Affects master Z rotation and the active angles for lazy selection.

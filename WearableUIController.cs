@@ -9,53 +9,28 @@ namespace WearableItemsAPI
 {
     internal class WearableUIController : MonoBehaviour
     {
-        /*private static WearableUIController? _instance;
-        public static WearableUIController Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    var obj = new GameObject("WearableUIController");
-                    _instance = obj.AddComponent<WearableUIController>();
-                    DontDestroyOnLoad(obj);
-                }
-                return _instance;
-            }
-        }*/
-
         public static WearableUIController? Instance;
 
         public static string OpenUIKeybind => InputControlPath.ToHumanReadableString(WearableItemsInputs.Instance.OpenUIKey.bindings[0].path, InputControlPath.HumanReadableStringOptions.OmitDevice);
 
 #pragma warning disable CS8618
-        public static GameObject Prefab;
-
-        public GameObject ButtonPrefab;
-        public Animator uiAnimator;
+        public static GameObject prefab;
+        public GameObject radialMenuPrefab;
+        public GameObject radialMenuElementPrefab;
+        public Animator animator;
+        public Transform canvas;
 #pragma warning restore CS8618
 
-        public List<WearableUIButton> wearableUIButtons = [];
+        [HideInInspector]
+        public RadialMenu? ui;
 
-        public bool IsUIOpen {  get; private set; }
-
-        /* bodyparts
-         * 0 head
-         * 1 right arm
-         * 2 left arm
-         * 3 right leg
-         * 4 left leg
-         * 5 chest
-         * 6 feet
-         * 7 right hip
-         * 8 crotch
-         * 9 left shoulder
-         * 10 right shoulder */
+        bool uiOpen => ui != null;
+        bool openingUI;
 
         public static void Init()
         {
             if (Instance != null) { return; }
-            Instantiate(Prefab, localPlayer.transform);
+            Instantiate(prefab, localPlayer.transform);
         }
 
         public void OnDestroy()
@@ -77,35 +52,29 @@ namespace WearableItemsAPI
             }
 
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
-
-            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {OpenUIKeybind} to open Wearable Items UI Inventory", false, true, "WearableItemsAPITip1");
+            DontDestroyOnLoad(gameObject); // TODO: Test
 
             logger.LogDebug("UIControllerScript: Start() complete");
         }
 
         public void Update()
         {
-            if (IsUIOpen && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.tabKey.wasPressedThisFrame))
+            if (uiOpen && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.tabKey.wasPressedThisFrame))
                 HideUI();
             
             if (WearableItemsInputs.Instance.OpenUIKey.WasPressedThisFrame() && localPlayer.CheckConditionsForEmote())
             {
-                if (!IsUIOpen) { ShowUI(); }
+                if (!uiOpen) { ShowUI(); }
                 else { HideUI(); }
             }
-
-            /*if (configShowTooltip.Value)
-            {
-                HUDManager.Instance.ChangeControlTip(HUDManager.Instance.controlTipLines.Length - 1, $"Open Wearables UI [{OpenUIKeybind}]"); // TODO
-            }*/
         }
 
         public void ShowUI()
         {
             logger.LogDebug("Showing UI");
 
-
+            openingUI = true;
+            animator.SetBool("open", true);
 
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
@@ -117,15 +86,41 @@ namespace WearableItemsAPI
         public void HideUI()
         {
             logger.LogDebug("Hiding UI");
-            //veMain.style.display = DisplayStyle.None;
 
-
+            openingUI = false;
+            GameObject.Destroy(ui?.gameObject);
+            ui = null;
+            animator.SetBool("open", false);
 
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
             localPlayer.disableMoveInput = false;
             localPlayer.disableInteract = false;
             localPlayer.disableLookInput = false;
+        }
+
+        public void BuildUI() // Animation
+        {
+            if (!openingUI) { return; }
+            ui = Instantiate(radialMenuPrefab, canvas).GetComponent<RadialMenu>();
+            foreach (var item in WearableObject.wornItems)
+            {
+                RadialMenuElement element = Instantiate(radialMenuElementPrefab, ui.elementsContainer).GetComponent<RadialMenuElement>();
+                element.item = item;
+                element.label = item.itemProperties.itemName;
+                element.icon.sprite = item.wearableItemProperties.icon != null ? item.wearableItemProperties.icon : item.itemProperties.itemIcon;
+                element.button.onClick.AddListener(() => OnClickElement(element));
+                ui.elements.Add(element);
+            }
+            ui.Build();
+        }
+
+        public void OnClickElement(RadialMenuElement element)
+        {
+            ui!.elements.Remove(element);
+            element.item.UnwearServerRpc();
+            Destroy(element.gameObject);
+            ui.Build();
         }
     }
 }

@@ -52,7 +52,7 @@ namespace WearableItemsAPI
             }
             logger.LogDebug($"Got AssetBundle at: {Path.Combine(sAssemblyLocation, "wearable_items_assets")}");
 
-            WearableUIController.Prefab = ModAssets.LoadAsset<GameObject>("Assets/ModAssets/WearableItemsUI.prefab");
+            WearableUIController.prefab = ModAssets.LoadAsset<GameObject>("Assets/ModAssets/WearableItemsUI.prefab");
 
             // Finished
             Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");

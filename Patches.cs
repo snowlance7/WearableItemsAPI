@@ -14,7 +14,7 @@ namespace WearableItemsAPI
         private static bool OpenQuickMenuPatch()
         {
             if (WearableUIController.Instance == null) { return true; }
-            if (WearableUIController.Instance.IsUIOpen) { return false; }
+            if (WearableUIController.Instance.ui != null) { return false; }
             return true;
         }
 

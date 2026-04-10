@@ -9,14 +9,13 @@ using System.Collections.Generic;
 [AddComponentMenu("Radial Menu")]
 public class RadialMenu : MonoBehaviour
 {
-
+#pragma warning disable CS8618
     [HideInInspector]
     public RectTransform rt;
     //public RectTransform baseCircleRT;
     //public Image selectionFollowerImage;
-
-    [Tooltip("Adjusts the radial menu for use with a gamepad or joystick. You might need to edit this script if you're not using the default horizontal and vertical input axes.")]
-    public bool useGamepad = false;
+    public Transform elementsContainer;
+#pragma warning restore CS8618
 
     [Tooltip("With lazy selection, you only have to point your mouse (or joystick) in the direction of an element to select it, rather than be moused over the element entirely.")]
     public bool useLazySelection = true;
@@ -46,7 +45,7 @@ public class RadialMenu : MonoBehaviour
     [HideInInspector]
     public int index = 0; //The current index of the element we're pointing at.
 
-    private int elementCount;
+    private int elementCount => elements.Count;
 
     private float angleOffset; //The base offset. For example, if there are 4 elements, then our offset is 360/4 = 90
 
@@ -54,25 +53,15 @@ public class RadialMenu : MonoBehaviour
 
     private PointerEventData pointer;
 
-    void Awake() {
-
-        pointer = new PointerEventData(EventSystem.current);
-
-        rt = GetComponent<RectTransform>();
-
-        if (rt == null)
-            Debug.LogError("Radial Menu: Rect Transform for radial menu " + gameObject.name + " could not be found. Please ensure this is an object parented to a canvas.");
-
-        if (useSelectionFollower && selectionFollowerContainer == null)
-            Debug.LogError("Radial Menu: Selection follower container is unassigned on " + gameObject.name + ", which has the selection follower enabled.");
-
-        elementCount = elements.Count;
-
+    public void Build()
+    {
         angleOffset = (360f / (float)elementCount);
 
         //Loop through and set up the elements.
-        for (int i = 0; i < elementCount; i++) {
-            if (elements[i] == null) {
+        for (int i = 0; i < elementCount; i++)
+        {
+            if (elements[i] == null)
+            {
                 Debug.LogError("Radial Menu: element " + i.ToString() + " in the radial menu " + gameObject.name + " is null!");
                 continue;
             }
@@ -81,44 +70,24 @@ public class RadialMenu : MonoBehaviour
             elements[i].setAllAngles((angleOffset * i) + globalOffset, angleOffset);
 
             elements[i].assignedIndex = i;
-
         }
-
     }
 
+    void Awake()
+    {
+        pointer = new PointerEventData(EventSystem.current);
 
-    void Start() {
-
-
-        if (useGamepad) {
-            EventSystem.current.SetSelectedGameObject(gameObject, null); //We'll make this the active object when we start it. Comment this line to set it manually from another script.
-            if (useSelectionFollower && selectionFollowerContainer != null)
-                selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, -globalOffset); //Point the selection follower at the first element.
-        }
-
+        rt = GetComponent<RectTransform>();
     }
 
-    // Update is called once per frame
-    void Update() {
-
-        //If your gamepad uses different horizontal and vertical joystick inputs, change them here!
-        //==============================================================================================
-        bool joystickMoved = Input.GetAxis("Horizontal") != 0.0 || Input.GetAxis("Vertical") != 0.0;
-        //==============================================================================================
-
-
+    void Update()
+    {
         float rawAngle;
-        
-        if (!useGamepad)
-            rawAngle = Mathf.Atan2(Input.mousePosition.y - rt.position.y, Input.mousePosition.x - rt.position.x) * Mathf.Rad2Deg;
-        else
-            rawAngle = Mathf.Atan2(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal")) * Mathf.Rad2Deg;
+
+        rawAngle = Mathf.Atan2(Input.mousePosition.y - rt.position.y, Input.mousePosition.x - rt.position.x) * Mathf.Rad2Deg;
 
         //If no gamepad, update the angle always. Otherwise, only update it if we've moved the joystick.
-        if (!useGamepad)
-            currentAngle = normalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
-        else if (joystickMoved)
-            currentAngle = normalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
+        currentAngle = normalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
 
         //Handles lazy selection. Checks the current angle, matches it to the index of an element, and then highlights that element.
         if (angleOffset != 0 && useLazySelection) {
@@ -135,52 +104,40 @@ public class RadialMenu : MonoBehaviour
                 if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Submit")) {
 
                     ExecuteEvents.Execute(elements[index].button.gameObject, pointer, ExecuteEvents.submitHandler);
-
-
                 }
             }
-
         }
 
         //Updates the selection follower if we're using one.
-        if (useSelectionFollower && selectionFollowerContainer != null) {
-            if (!useGamepad || joystickMoved)
-                selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, rawAngle + 270);
-           
-
-        } 
-
+        if (useSelectionFollower && selectionFollowerContainer != null)
+        {
+            selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, rawAngle + 270);
+        }
     }
 
 
     //Selects the button with the specified index.
-    private void selectButton(int i) {
-
-          if (elements[i].active == false) {
-
+    private void selectButton(int i)
+    {
+        if (elements[i].active == false)
+        {
             elements[i].highlightThisElement(pointer); //Select this one
 
             if (previousActiveIndex != i) 
                 elements[previousActiveIndex].unHighlightThisElement(pointer); //Deselect the last one.
-            
-
         }
 
         previousActiveIndex = i;
-
     }
 
     //Keeps angles between 0 and 360.
-    private float normalizeAngle(float angle) {
-
+    private float normalizeAngle(float angle)
+    {
         angle = angle % 360f;
 
         if (angle < 0)
             angle += 360;
 
         return angle;
-
     }
-
-
 }
