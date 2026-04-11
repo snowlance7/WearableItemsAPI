@@ -1,8 +1,5 @@
-﻿using BepInEx.Logging;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 using static WearableItemsAPI.Plugin;
 
 namespace WearableItemsAPI
@@ -30,6 +27,7 @@ namespace WearableItemsAPI
         public static void Init()
         {
             if (Instance != null) { return; }
+            if (prefab == null) { logger.LogError("Could not instantiate UI"); return; }
             Instantiate(prefab, localPlayer.transform);
         }
 
@@ -112,13 +110,14 @@ namespace WearableItemsAPI
                 element.button.onClick.AddListener(() => OnClickElement(element));
                 ui.elements.Add(element);
             }
+
             ui.Build();
         }
 
         public void OnClickElement(RadialMenuElement element)
         {
             ui!.elements.Remove(element);
-            element.item.UnwearServerRpc();
+            element.item.UnWearItem();
             Destroy(element.gameObject);
             ui.Build();
         }

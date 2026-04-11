@@ -1,8 +1,6 @@
-﻿using BepInEx.Logging;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Unity.Netcode;
 using UnityEngine;
 using static WearableItemsAPI.Plugin;
@@ -36,7 +34,7 @@ namespace WearableItemsAPI
 
                 if (!playerWornBy.isPlayerControlled)
                 {
-                    UnWear();
+                    OnUnWear();
                     return;
                 }
             }
@@ -64,17 +62,49 @@ namespace WearableItemsAPI
             }
         }
 
-        public void RequestWear(PlayerControllerB player)
+        public override void ItemActivate(bool used, bool buttonDown = true)
         {
-            if (playerWornBy != null) { return; }
+            base.ItemActivate(used, buttonDown);
+            if (buttonDown && wearableItemProperties.wearOnUse)
+                WearItem(playerHeldBy);
+        }
+
+        public void WearItem(PlayerControllerB player)
+        {
+            if (playerWornBy != null || !CanWear()) { return; }
             WearServerRpc(player.actualClientId);
         }
 
-        public virtual void Wear(PlayerControllerB player)
+        bool CanWear()
         {
-            logger.LogDebug("Wearing " + itemProperties.itemName);
+            var current = wearableItemProperties;
 
-            playerWornBy = player;
+            foreach (var item in wornItems)
+            {
+                var other = item.wearableItemProperties;
+
+                if (((other.restrictSlot || current.restrictSlot) && other.slot == current.slot) || (current.restrictions.Any(r => other.restrictions.Contains(r))))
+                {
+                    HUDManager.Instance.DisplayTip("Can't wear item", $"'{other.spawnPrefab.itemProperties.itemName}' is preventing you from wearing this item", true);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public void UnWearItem()
+        {
+            if (playerWornBy == null) { return; }
+            UnwearServerRpc();
+        }
+
+        protected virtual void OnWear(PlayerControllerB playerWearing)
+        {
+            if (playerWornBy != null) { logger.LogDebug("Player already wearing item"); return; }
+            logger.LogDebug(playerWearing.playerUsername + " wearing " + itemProperties.itemName);
+
+            playerWornBy = playerWearing;
             playerWornBy.DiscardHeldObject(false, playerWornBy.NetworkObject);
 
             parentObject = wearableItemProperties.slot == WearableSlot.None ? playerWornBy.transform : playerWornBy.bodyParts[(int)wearableItemProperties.slot];
@@ -88,7 +118,7 @@ namespace WearableItemsAPI
             HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.Instance.OpenUIKey.activeControl.displayName} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
 
-        public virtual void UnWear()
+        protected virtual void OnUnWear()
         {
             if (playerWornBy == null) return;
 
@@ -135,31 +165,31 @@ namespace WearableItemsAPI
 
         // RPCs
         [ServerRpc(RequireOwnership = false)]
-        public void WearServerRpc(ulong clientId)
+        protected void WearServerRpc(ulong clientId)
         {
             if (!IsServer) { return; }
             WearClientRpc(clientId);
         }
 
         [ClientRpc]
-        public void WearClientRpc(ulong clientId)
+        protected void WearClientRpc(ulong clientId)
         {
             PlayerControllerB? player = PlayerFromId(clientId);
             if (player == null) { logger.LogError("Couldn't get player from player client id"); return; }
-            Wear(player);
+            OnWear(player);
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void UnwearServerRpc()
+        protected void UnwearServerRpc()
         {
             if (!IsServer) { return; }
             UnwearClientRpc();
         }
 
         [ClientRpc]
-        public void UnwearClientRpc()
+        protected void UnwearClientRpc()
         {
-            UnWear();
+            OnUnWear();
         }
     }
 }

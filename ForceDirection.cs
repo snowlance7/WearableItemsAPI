@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 
 [AddComponentMenu("Radial Menu Force Direction")]
 [ExecuteInEditMode]

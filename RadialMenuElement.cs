@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Collections;
+using UnityEngine.UI;
 using WearableItemsAPI;
 
 [AddComponentMenu("Radial Menu Element")]
@@ -14,6 +13,7 @@ public class RadialMenuElement : MonoBehaviour
 
     public Button button;
 
+    [HideInInspector]
     public string label;
 
     public Image icon;
@@ -32,7 +32,6 @@ public class RadialMenuElement : MonoBehaviour
 
     [HideInInspector]
     public int assignedIndex = 0;
-    // Use this for initialization
 
     private CanvasGroup cg;
 
@@ -55,15 +54,11 @@ public class RadialMenuElement : MonoBehaviour
 
     void Start ()
     {
-        rt.rotation = Quaternion.Euler(0, 0, -angleOffset); //Apply rotation determined by the parent radial menu.
+        rt.rotation = Quaternion.Euler(0, 0, -angleOffset);
 
-        //If we're using lazy selection, we don't want our normal mouse-over effects interfering, so we turn raycasts off.
         if (parentRM.useLazySelection)
             cg.blocksRaycasts = false;
         else {
-
-            //Otherwise, we have to do some magic with events to get the label stuff working on mouse-over.
-
             EventTrigger t;
 
             if (button.GetComponent<EventTrigger>() == null) {
@@ -72,12 +67,9 @@ public class RadialMenuElement : MonoBehaviour
             } else
                 t = button.GetComponent<EventTrigger>();
 
-
-
             EventTrigger.Entry enter = new EventTrigger.Entry();
             enter.eventID = EventTriggerType.PointerEnter;
             enter.callback.AddListener((eventData) => { setParentMenuLable(label); });
-
 
             EventTrigger.Entry exit = new EventTrigger.Entry();
             exit.eventID = EventTriggerType.PointerExit;
@@ -88,36 +80,26 @@ public class RadialMenuElement : MonoBehaviour
         }
     }
 	
-    //Used by the parent radial menu to set up all the approprate angles. Affects master Z rotation and the active angles for lazy selection.
     public void setAllAngles(float offset, float baseOffset) {
 
         angleOffset = offset;
         angleMin = offset - (baseOffset / 2f);
         angleMax = offset + (baseOffset / 2f);
-
     }
 
-    //Highlights this button. Unity's default button wasn't really meant to be controlled through code so event handlers are necessary here.
-    //I would highly recommend not messing with this stuff unless you know what you're doing, if one event handler is wrong then the whole thing can break.
     public void highlightThisElement(PointerEventData p) {
 
         ExecuteEvents.Execute(button.gameObject, p, ExecuteEvents.selectHandler);
         active = true;
         setParentMenuLable(label);
-
     }
 
-    //Sets the label of the parent menu. Is set to public so you can call this elsewhere if you need to show a special label for something.
     public void setParentMenuLable(string l) {
 
         if (parentRM.textLabel != null)
             parentRM.textLabel.text = l;
-
-
     }
 
-
-    //Unhighlights the button, and if lazy selection is off, will reset the menu's label.
     public void unHighlightThisElement(PointerEventData p) {
 
         ExecuteEvents.Execute(button.gameObject, p, ExecuteEvents.deselectHandler);
@@ -125,19 +107,5 @@ public class RadialMenuElement : MonoBehaviour
 
         if (!parentRM.useLazySelection)
             setParentMenuLable(" ");
-
-
     }
-
-    //Just a quick little test you can run to ensure things are working properly.
-    public void clickMeTest() {
-
-        Debug.Log(assignedIndex);
-
-
-    }
-
-
-
-
 }

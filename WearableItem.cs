@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace WearableItemsAPI
@@ -24,6 +22,11 @@ namespace WearableItemsAPI
             RightShoulder = 10
         }
 
+        public WearableObject spawnPrefab = null!;
+
+        [Tooltip("Wears this item if used by the player holding the item.")]
+        public bool wearOnUse = false;
+
         [Tooltip("Prevents this item from being worn with any item sharing the same restriction and vice-versa.")]
         public List<string> restrictions = new List<string>();
 
@@ -44,8 +47,6 @@ namespace WearableItemsAPI
 
         [Tooltip("Determines if the wearable is visible to the local player.")]
         public bool showWearableOnClient = true;
-
-        public WearableObject spawnPrefab = null!;
 
         [Tooltip("This is what will show on the button for the wearable in the UI")]
         public Sprite icon = null!;

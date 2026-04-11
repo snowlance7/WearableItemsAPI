@@ -1,6 +1,5 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine.UIElements;
 
 namespace WearableItemsAPI
 {
