@@ -85,7 +85,7 @@ namespace WearableItemsAPI
 
                 if (((other.restrictSlot || current.restrictSlot) && other.slot == current.slot) || (current.restrictions.Any(r => other.restrictions.Contains(r))))
                 {
-                    HUDManager.Instance.DisplayTip("Can't wear item", $"'{other.spawnPrefab.itemProperties.itemName}' is preventing you from wearing this item", true);
+                    HUDManager.Instance.DisplayTip("Can't wear item", $"'{item.itemProperties.itemName}' is preventing you from wearing this item", true);
                     return false;
                 }
             }

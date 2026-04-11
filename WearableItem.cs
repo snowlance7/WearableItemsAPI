@@ -22,7 +22,7 @@ namespace WearableItemsAPI
             RightShoulder = 10
         }
 
-        public WearableObject spawnPrefab = null!;
+        public GameObject spawnPrefab = null!;
 
         [Tooltip("Wears this item if used by the player holding the item.")]
         public bool wearOnUse = false;
