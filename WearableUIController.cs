@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using static WearableItemsAPI.Plugin;
 
@@ -57,10 +58,12 @@ namespace WearableItemsAPI
 
         public void Update()
         {
+            PlayerWearables.UpdateWearables();
+
             if (uiOpen && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.tabKey.wasPressedThisFrame))
                 HideUI();
             
-            if (WearableItemsInputs.Instance.OpenUIKey.WasPressedThisFrame() && localPlayer.CheckConditionsForEmote())
+            if (WearableItemsInputs.Instance.OpenUIKey.WasPressedThisFrame() && localPlayer.CheckConditionsForEmote() && localPlayer.GetWornItems().Count > 0)
             {
                 if (!uiOpen) { ShowUI(); }
                 else { HideUI(); }
@@ -101,7 +104,8 @@ namespace WearableItemsAPI
         {
             if (!openingUI) { return; }
             ui = Instantiate(radialMenuPrefab, canvas).GetComponent<RadialMenu>();
-            foreach (var item in WearableObject.wornItems)
+            //foreach (var item in WearableObject.wornItems)
+            foreach (var item in localPlayer.GetWornItems().ToList())
             {
                 RadialMenuElement element = Instantiate(radialMenuElementPrefab, ui.elementsContainer).GetComponent<RadialMenuElement>();
                 element.item = item;
@@ -118,6 +122,11 @@ namespace WearableItemsAPI
         {
             ui!.elements.Remove(element);
             element.item.UnWearItem();
+            if (localPlayer.GetWornItems().Count <= 0)
+            {
+                HideUI();
+                return;
+            }
             Destroy(element.gameObject);
             ui.Build();
         }

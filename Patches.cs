@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using GameNetcodeStuff;
 using HarmonyLib;
 
 namespace WearableItemsAPI
@@ -6,8 +7,6 @@ namespace WearableItemsAPI
     [HarmonyPatch]
     internal class Patches
     {
-        private static ManualLogSource logger = Plugin.logger;
-
         [HarmonyPrefix]
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.OpenQuickMenu))]
         private static bool OpenQuickMenuPatch()
@@ -18,8 +17,8 @@ namespace WearableItemsAPI
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.Awake))]
-        private static void AwakePostfix()
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ConnectClientToPlayerObject))]
+        private static void ConnectClientToPlayerObjectPostfix()
         {
             WearableUIController.Init();
         }

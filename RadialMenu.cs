@@ -2,25 +2,24 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 
 [AddComponentMenu("Radial Menu")]
 public class RadialMenu : MonoBehaviour
 {
-#pragma warning disable CS8618
     [HideInInspector]
-    public RectTransform rt;
+    public RectTransform rt = null!;
 
-    public Transform elementsContainer;
-#pragma warning restore CS8618
+    public Transform elementsContainer = null!;
 
     public bool useLazySelection = true;
 
     public bool useSelectionFollower = true;
 
-    public RectTransform selectionFollowerContainer;
+    public RectTransform selectionFollowerContainer = null!;
 
-    public Text textLabel;
+    public Text textLabel = null!;
 
     public List<RadialMenuElement> elements = new List<RadialMenuElement>();
 
@@ -39,7 +38,7 @@ public class RadialMenu : MonoBehaviour
 
     private int previousActiveIndex = 0;
 
-    private PointerEventData pointer;
+    private PointerEventData pointer = null!;
 
     public void Build()
     {
@@ -71,8 +70,10 @@ public class RadialMenu : MonoBehaviour
     void Update()
     {
         float rawAngle;
+        Vector2 mousePos = Mouse.current.position.ReadValue();
 
-        rawAngle = Mathf.Atan2(Input.mousePosition.y - rt.position.y, Input.mousePosition.x - rt.position.x) * Mathf.Rad2Deg;
+        //rawAngle = Mathf.Atan2(Input.mousePosition.y - rt.position.y, Input.mousePosition.x - rt.position.x) * Mathf.Rad2Deg;
+        rawAngle = Mathf.Atan2(mousePos.y - rt.position.y, mousePos.x - rt.position.x) * Mathf.Rad2Deg;
 
         currentAngle = normalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
 
@@ -84,10 +85,10 @@ public class RadialMenu : MonoBehaviour
 
                 selectButton(index);
 
-                if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Submit")) {
-
+                /*if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Submit"))
+                    ExecuteEvents.Execute(elements[index].button.gameObject, pointer, ExecuteEvents.submitHandler);*/
+                if (Mouse.current.leftButton.wasPressedThisFrame)
                     ExecuteEvents.Execute(elements[index].button.gameObject, pointer, ExecuteEvents.submitHandler);
-                }
             }
         }
 

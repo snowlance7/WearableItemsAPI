@@ -13,7 +13,8 @@ namespace WearableItemsAPI
         public PlayerControllerB? playerWornBy { get; private set; }
         public PlayerControllerB? lastPlayerWornBy { get; private set; }
 
-        public static List<WearableObject> wornItems = new List<WearableObject>();
+        //public static List<WearableObject> wornItems = new List<WearableObject>();
+        //public static Dictionary<PlayerControllerB, List<WearableObject>> wornItems = new Dictionary<PlayerControllerB, List<WearableObject>>();
 
         public WearableItem wearableItemProperties = null!;
 
@@ -79,7 +80,7 @@ namespace WearableItemsAPI
         {
             var current = wearableItemProperties;
 
-            foreach (var item in wornItems)
+            foreach (var item in localPlayer.GetWornItems())
             {
                 var other = item.wearableItemProperties;
 
@@ -113,7 +114,7 @@ namespace WearableItemsAPI
             EnableItemMeshes(_showWearable);
             scanNode?.gameObject.SetActive(false);
 
-            wornItems.Add(this);
+            playerWearing.AddWearable(this);
 
             HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.Instance.OpenUIKey.activeControl.displayName} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
@@ -154,8 +155,7 @@ namespace WearableItemsAPI
                 GrabItemOnClient();
             }
 
-            if (playerWornBy == localPlayer)
-                wornItems.Remove(this);
+            playerWornBy.RemoveWearable(this);
 
             GetComponent<Collider>().enabled = true;
             scanNode?.gameObject.SetActive(true);
