@@ -174,7 +174,7 @@ namespace WearableItemsAPI
         [ClientRpc]
         protected void WearClientRpc(ulong clientId)
         {
-            PlayerControllerB? player = PlayerFromId(clientId);
+            PlayerControllerB? player = StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == clientId).FirstOrDefault();
             if (player == null) { logger.LogError("Couldn't get player from player client id"); return; }
             OnWear(player);
         }

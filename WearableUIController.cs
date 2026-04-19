@@ -103,8 +103,15 @@ namespace WearableItemsAPI
         public void BuildUI() // Animation
         {
             if (!openingUI) { return; }
+
+            if (ui != null)
+            {
+                GameObject.Destroy(ui.gameObject);
+                ui = null;
+            }
+
             ui = Instantiate(radialMenuPrefab, canvas).GetComponent<RadialMenu>();
-            //foreach (var item in WearableObject.wornItems)
+
             foreach (var item in localPlayer.GetWornItems().ToList())
             {
                 RadialMenuElement element = Instantiate(radialMenuElementPrefab, ui.elementsContainer).GetComponent<RadialMenuElement>();
@@ -122,13 +129,7 @@ namespace WearableItemsAPI
         {
             ui!.elements.Remove(element);
             element.item.UnWearItem();
-            if (localPlayer.GetWornItems().Count <= 0)
-            {
-                HideUI();
-                return;
-            }
-            Destroy(element.gameObject);
-            ui.Build();
+            HideUI();
         }
     }
 }

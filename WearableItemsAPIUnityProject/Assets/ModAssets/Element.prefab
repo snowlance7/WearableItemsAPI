@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4e83dd1d1e93fb44f97f3b93a960b813, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a822b43773abdfe4da0d1382a490a930, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -144,6 +144,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4939481146557156769}
   - component: {fileID: 8107987456403673054}
+  - component: {fileID: 1655162316799256890}
   m_Layer: 5
   m_Name: Element
   m_TagString: Untagged
@@ -194,6 +195,18 @@ MonoBehaviour:
   angleOffset: 0
   active: 0
   assignedIndex: 0
+--- !u!225 &1655162316799256890
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3163986721906064144}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &5097440961299590809
 GameObject:
   m_ObjectHideFlags: 0

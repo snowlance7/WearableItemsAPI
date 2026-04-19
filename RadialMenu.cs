@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using static WearableItemsAPI.Plugin;
 
 
 [AddComponentMenu("Radial Menu")]
@@ -13,43 +14,35 @@ public class RadialMenu : MonoBehaviour
 
     public Transform elementsContainer = null!;
 
-    public bool useLazySelection = true;
-
-    public bool useSelectionFollower = true;
-
     public RectTransform selectionFollowerContainer = null!;
 
     public Text textLabel = null!;
 
     public List<RadialMenuElement> elements = new List<RadialMenuElement>();
 
-    public float globalOffset = 0f;
+    float globalOffset = 0f;
 
+    float currentAngle = 0f;
 
-    [HideInInspector]
-    public float currentAngle = 0f;
+    int index = 0;
 
-    [HideInInspector]
-    public int index = 0;
+    int elementCount => elements.Count;
 
-    private int elementCount => elements.Count;
+    float angleOffset;
 
-    private float angleOffset;
+    int previousActiveIndex = 0;
 
-    private int previousActiveIndex = 0;
-
-    private PointerEventData pointer = null!;
+    PointerEventData pointer = null!;
 
     public void Build()
     {
         angleOffset = (360f / (float)elementCount);
 
-        //Loop through and set up the elements.
         for (int i = 0; i < elementCount; i++)
         {
             if (elements[i] == null)
             {
-                Debug.LogError("Radial Menu: element " + i.ToString() + " in the radial menu " + gameObject.name + " is null!");
+                logger.LogError("Radial Menu: element " + i.ToString() + " in the radial menu " + gameObject.name + " is null!");
                 continue;
             }
             elements[i].parentRM = this;
@@ -72,30 +65,25 @@ public class RadialMenu : MonoBehaviour
         float rawAngle;
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
-        //rawAngle = Mathf.Atan2(Input.mousePosition.y - rt.position.y, Input.mousePosition.x - rt.position.x) * Mathf.Rad2Deg;
         rawAngle = Mathf.Atan2(mousePos.y - rt.position.y, mousePos.x - rt.position.x) * Mathf.Rad2Deg;
 
         currentAngle = normalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
 
-        if (angleOffset != 0 && useLazySelection) {
-
+        if (angleOffset != 0) 
+        {
             index = (int)(currentAngle / angleOffset);
 
-            if (elements[index] != null) {
-
+            if (elements[index] != null)
+            {
                 selectButton(index);
 
-                /*if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Submit"))
-                    ExecuteEvents.Execute(elements[index].button.gameObject, pointer, ExecuteEvents.submitHandler);*/
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                     ExecuteEvents.Execute(elements[index].button.gameObject, pointer, ExecuteEvents.submitHandler);
             }
         }
 
-        if (useSelectionFollower && selectionFollowerContainer != null)
-        {
+        if (selectionFollowerContainer != null)
             selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, rawAngle + 270);
-        }
     }
 
     private void selectButton(int i)

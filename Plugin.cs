@@ -1,4 +1,5 @@
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
@@ -14,13 +15,12 @@ namespace WearableItemsAPI
     [BepInDependency(LethalCompanyInputUtils.MyPluginInfo.PLUGIN_GUID)]
     internal class Plugin : BaseUnityPlugin
     {
-#pragma warning disable CS8618
-        internal static Plugin Instance;
-        internal static ManualLogSource logger;
-#pragma warning restore CS8618
+        internal static Plugin Instance = null!;
+
+        internal static ManualLogSource logger = null!;
+
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
-        public static PlayerControllerB PlayerFromId(ulong id) { return StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == id).First(); }
 
         private void Awake()
         {
