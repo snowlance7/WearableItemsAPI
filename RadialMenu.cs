@@ -34,23 +34,27 @@ public class RadialMenu : MonoBehaviour
 
     PointerEventData pointer = null!;
 
-    public void Build()
+    public void Rebuild()
     {
-        angleOffset = (360f / (float)elementCount);
+        angleOffset = elementCount > 0 ? 360f / elementCount : 0f;
 
         for (int i = 0; i < elementCount; i++)
         {
-            if (elements[i] == null)
-            {
-                logger.LogError("Radial Menu: element " + i.ToString() + " in the radial menu " + gameObject.name + " is null!");
+            var element = elements[i];
+
+            if (element == null)
                 continue;
-            }
-            elements[i].parentRM = this;
 
-            elements[i].setAllAngles((angleOffset * i) + globalOffset, angleOffset);
+            element.parentRM = this;
+            element.assignedIndex = i;
+            element.setAllAngles((angleOffset * i) + globalOffset, angleOffset);
 
-            elements[i].assignedIndex = i;
+            var rt = element.GetComponent<RectTransform>();
+            rt.rotation = Quaternion.Euler(0, 0, -element.angleOffset);
         }
+
+        previousActiveIndex = Mathf.Clamp(previousActiveIndex, 0, elementCount - 1);
+        index = Mathf.Clamp(index, 0, elementCount - 1);
     }
 
     void Awake()
@@ -69,9 +73,9 @@ public class RadialMenu : MonoBehaviour
 
         currentAngle = normalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
 
-        if (angleOffset != 0) 
+        if (angleOffset != 0 && elementCount > 0)
         {
-            index = (int)(currentAngle / angleOffset);
+            index = Mathf.Clamp((int)(currentAngle / angleOffset), 0, elementCount - 1);
 
             if (elements[index] != null)
             {

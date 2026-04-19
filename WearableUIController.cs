@@ -122,14 +122,23 @@ namespace WearableItemsAPI
                 ui.elements.Add(element);
             }
 
-            ui.Build();
+            ui.Rebuild();
         }
 
         public void OnClickElement(RadialMenuElement element)
         {
-            ui!.elements.Remove(element);
             element.item.UnWearItem();
-            HideUI();
+
+            ui!.elements.Remove(element);
+            Destroy(element.gameObject);
+
+            if (ui.elements.Count <= 0)
+            {
+                HideUI();
+                return;
+            }
+
+            ui.Rebuild();
         }
     }
 }
