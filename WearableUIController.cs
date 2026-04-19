@@ -1,26 +1,24 @@
 ﻿using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using static WearableItemsAPI.Plugin;
 
 namespace WearableItemsAPI
 {
     internal class WearableUIController : MonoBehaviour
     {
+        public static GameObject prefab = null!;
         public static WearableUIController? Instance;
 
-        public static string OpenUIKeybind => InputControlPath.ToHumanReadableString(WearableItemsInputs.Instance.OpenUIKey.bindings[0].path, InputControlPath.HumanReadableStringOptions.OmitDevice);
+        [SerializeField] GameObject radialMenuPrefab = null!;
+        [SerializeField] GameObject radialMenuElementPrefab = null!;
+        [SerializeField] Transform canvas = null!;
+        [SerializeField] TMP_Text iconLabel = null!;
+        [SerializeField] Animator animator = null!;
 
-#pragma warning disable CS8618
-        public static GameObject prefab;
-        public GameObject radialMenuPrefab;
-        public GameObject radialMenuElementPrefab;
-        public Animator animator;
-        public Transform canvas;
-#pragma warning restore CS8618
-
-        [HideInInspector]
-        public RadialMenu? ui;
+        [HideInInspector] public RadialMenu? ui;
 
         bool uiOpen => ui != null;
         bool openingUI;
@@ -52,6 +50,8 @@ namespace WearableItemsAPI
 
             Instance = this;
             DontDestroyOnLoad(gameObject); // TODO: Test
+
+            iconLabel.text = $"[{WearableItemsInputs.OpenUIKeybind}]";
 
             logger.LogDebug("UIControllerScript: Start() complete");
         }

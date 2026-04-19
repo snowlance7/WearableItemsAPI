@@ -100,7 +100,7 @@ namespace WearableItemsAPI
             UnwearServerRpc();
         }
 
-        protected virtual void OnWear(PlayerControllerB playerWearing)
+        public virtual void OnWear(PlayerControllerB playerWearing)
         {
             if (playerWornBy != null) { logger.LogDebug("Player already wearing item"); return; }
             logger.LogDebug(playerWearing.playerUsername + " wearing " + itemProperties.itemName);
@@ -116,10 +116,10 @@ namespace WearableItemsAPI
 
             playerWearing.AddWearable(this);
 
-            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.Instance.OpenUIKey.activeControl.displayName} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
+            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.OpenUIKeybind} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
 
-        protected virtual void OnUnWear()
+        public virtual void OnUnWear()
         {
             if (playerWornBy == null) return;
 

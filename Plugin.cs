@@ -22,10 +22,6 @@ namespace WearableItemsAPI
         public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
         public static PlayerControllerB PlayerFromId(ulong id) { return StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == id).First(); }
 
-        public static bool IsServerOrHost { get { return NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost; } }
-
-        public static AssetBundle? ModAssets;
-
         private void Awake()
         {
             if (Instance == null)
@@ -39,20 +35,8 @@ namespace WearableItemsAPI
 
             InitializeNetworkBehaviours();
 
-            WearableItemsInputs.Init();
-
-            // Loading Assets
-            string sAssemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            ModAssets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Info.Location), "wearable_items_assets"));
-            if (ModAssets == null)
-            {
-                Logger.LogError($"Failed to load custom assets.");
-                return;
-            }
-            logger.LogDebug($"Got AssetBundle at: {Path.Combine(sAssemblyLocation, "wearable_items_assets")}");
-
-            WearableUIController.prefab = ModAssets.LoadAsset<GameObject>("Assets/ModAssets/WearableItemsUI.prefab");
+            var assets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Info.Location), "wearable_items_assets"));
+            WearableUIController.prefab = assets.LoadAsset<GameObject>("Assets/ModAssets/WearableItemsUI.prefab");
 
             // Finished
             Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
