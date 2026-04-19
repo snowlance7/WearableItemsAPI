@@ -51,14 +51,14 @@ namespace WearableItemsAPI
             Instance = this;
             DontDestroyOnLoad(gameObject); // TODO: Test
 
-            iconLabel.text = $"[{WearableItemsInputs.OpenUIKeybind}]";
-
             logger.LogDebug("UIControllerScript: Start() complete");
         }
 
         public void Update()
         {
             PlayerWearables.UpdateWearables();
+
+            iconLabel.text = $"[{WearableItemsInputs.OpenUIKeybind}]";
 
             if (uiOpen && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.tabKey.wasPressedThisFrame))
                 HideUI();
