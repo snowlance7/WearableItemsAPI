@@ -119,7 +119,7 @@ namespace WearableItemsAPI
             HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.OpenUIKeybind} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
 
-        public virtual void OnUnWear()
+        public virtual void OnUnWear() // TODO: Set this up so that it puts item in empty item slot, or if full drops it on the ground. also switch equiped item to the wearable when its unworn
         {
             if (playerWornBy == null) return;
 
