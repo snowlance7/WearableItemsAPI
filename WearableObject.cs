@@ -119,7 +119,7 @@ namespace WearableItemsAPI
             HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.OpenUIKeybind} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
 
-        public virtual void OnUnWear() // TODO: Set this up so that it puts item in empty item slot, or if full drops it on the ground. also switch equiped item to the wearable when its unworn
+        /*public virtual void OnUnWear() // TODO: Set this up so that it puts item in empty item slot, or if full drops it on the ground. also switch equiped item to the wearable when its unworn
         {
             if (playerWornBy == null) return;
 
@@ -148,11 +148,110 @@ namespace WearableItemsAPI
             }
             else if (playerWornBy == localPlayer)
             {
-                logger.LogDebug("Grabbing " + itemProperties.itemName);
+                localPlayer.currentlyGrabbingObject = this;
+                localPlayer.grabInvalidated = false;
 
-                playerWornBy.GrabObjectServerRpc(NetworkObject);
-                parentObject = playerWornBy.localItemHolder;
-                GrabItemOnClient();
+                if (localPlayer.FirstEmptyItemSlot(this) != -1)
+                {
+                    localPlayer.playerBodyAnimator.SetBool("GrabInvalidated", value: false);
+                    localPlayer.playerBodyAnimator.SetBool("GrabValidated", value: false);
+                    localPlayer.playerBodyAnimator.SetBool("cancelHolding", value: false);
+                    localPlayer.playerBodyAnimator.ResetTrigger("Throw");
+                    localPlayer.SetSpecialGrabAnimationBool(setTrue: true);
+                    localPlayer.isGrabbingObjectAnimation = true;
+                    localPlayer.cursorIcon.enabled = false;
+                    localPlayer.cursorTip.text = "";
+                    localPlayer.twoHanded = itemProperties.twoHanded;
+                    localPlayer.carryWeight = Mathf.Clamp(localPlayer.carryWeight + (itemProperties.weight - 1f), 1f, 10f);
+                    StartOfRound.Instance.SendChangedWeightEvent();
+                    if (itemProperties.grabAnimationTime > 0f)
+                    {
+                        localPlayer.grabObjectAnimationTime = itemProperties.grabAnimationTime;
+                    }
+                    else
+                    {
+                        localPlayer.grabObjectAnimationTime = 0.4f;
+                    }
+                    if (!localPlayer.isTestingPlayer)
+                    {
+                        localPlayer.GrabObjectServerRpc(NetworkObject);
+                    }
+                    if (localPlayer.grabObjectCoroutine != null)
+                    {
+                        StopCoroutine(localPlayer.grabObjectCoroutine);
+                    }
+                    localPlayer.grabObjectCoroutine = StartCoroutine(localPlayer.GrabObject());
+                }
+            }
+
+            playerWornBy.RemoveWearable(this);
+
+            GetComponent<Collider>().enabled = true;
+            scanNode?.gameObject.SetActive(true);
+            EnableItemMeshes(true);
+            playerWornBy = null;
+        }*/
+
+        public virtual void OnUnWear() // TODO: Set this up so that it puts item in empty item slot, or if full drops it on the ground. also switch equiped item to the wearable when its unworn
+        {
+            if (playerWornBy == null) return;
+            PlayerControllerB playerUnwearing = playerWornBy;
+
+            parentObject = null;
+
+            Transform targetParent = playerUnwearing.isInElevator
+                ? playerUnwearing.playersManager.elevatorTransform
+                : playerUnwearing.playersManager.propsContainer;
+
+            transform.SetParent(targetParent, true);
+
+            playerUnwearing.SetItemInElevator(
+                playerUnwearing.isInHangarShipRoom,
+                playerUnwearing.isInElevator,
+                this
+            );
+
+            EnablePhysics(true);
+            startFallingPosition = transform.parent.InverseTransformPoint(transform.position);
+            fallTime = 0f;
+            FallToGround(true);
+
+            if (playerUnwearing == localPlayer)
+            {
+                localPlayer.currentlyGrabbingObject = this;
+                localPlayer.grabInvalidated = false;
+
+                if (localPlayer.FirstEmptyItemSlot(this) != -1)
+                {
+                    localPlayer.playerBodyAnimator.SetBool("GrabInvalidated", value: false);
+                    localPlayer.playerBodyAnimator.SetBool("GrabValidated", value: false);
+                    localPlayer.playerBodyAnimator.SetBool("cancelHolding", value: false);
+                    localPlayer.playerBodyAnimator.ResetTrigger("Throw");
+                    localPlayer.SetSpecialGrabAnimationBool(setTrue: true);
+                    localPlayer.isGrabbingObjectAnimation = true;
+                    localPlayer.cursorIcon.enabled = false;
+                    localPlayer.cursorTip.text = "";
+                    localPlayer.twoHanded = itemProperties.twoHanded;
+                    localPlayer.carryWeight = Mathf.Clamp(localPlayer.carryWeight + (itemProperties.weight - 1f), 1f, 10f);
+                    StartOfRound.Instance.SendChangedWeightEvent();
+                    if (itemProperties.grabAnimationTime > 0f)
+                    {
+                        localPlayer.grabObjectAnimationTime = itemProperties.grabAnimationTime;
+                    }
+                    else
+                    {
+                        localPlayer.grabObjectAnimationTime = 0.4f;
+                    }
+                    if (!localPlayer.isTestingPlayer)
+                    {
+                        localPlayer.GrabObjectServerRpc(NetworkObject);
+                    }
+                    if (localPlayer.grabObjectCoroutine != null)
+                    {
+                        StopCoroutine(localPlayer.grabObjectCoroutine);
+                    }
+                    localPlayer.grabObjectCoroutine = StartCoroutine(localPlayer.GrabObject());
+                }
             }
 
             playerWornBy.RemoveWearable(this);

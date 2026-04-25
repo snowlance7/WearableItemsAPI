@@ -1,6 +1,7 @@
 ﻿using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
+using static WearableItemsAPI.Plugin;
 
 namespace WearableItemsAPI
 {
@@ -9,18 +10,49 @@ namespace WearableItemsAPI
     {
         [HarmonyPrefix]
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.OpenQuickMenu))]
-        private static bool OpenQuickMenuPatch()
+        private static bool QuickMenuManager_OpenQuickMenuPrefix()
         {
-            if (WearableUIController.Instance == null) { return true; }
-            if (WearableUIController.Instance.ui != null) { return false; }
-            return true;
+            try
+            {
+                if (WearableUIController.Instance != null && WearableUIController.Instance.ui != null) { return false; }
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e);
+                return true;
+            }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.CanUseItem))]
+        private static bool PlayerControllerB_CanUseItemPrefix()
+        {
+            try
+            {
+                if (WearableUIController.Instance != null && WearableUIController.Instance.ui != null) { return false; }
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e);
+                return true;
+            }
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ConnectClientToPlayerObject))]
-        private static void ConnectClientToPlayerObjectPostfix()
+        private static void PlayerControllerB_ConnectClientToPlayerObjectPostfix()
         {
-            WearableUIController.Init();
+            try
+            {
+                WearableUIController.Init();
+            }
+            catch (System.Exception e)
+            {
+                logger.LogError(e);
+                return;
+            }
         }
     }
 }

@@ -132,7 +132,7 @@ namespace WearableItemsAPI
             ui!.elements.Remove(element);
             Destroy(element.gameObject);
 
-            if (ui.elements.Count <= 0)
+            if (ui.elements.Count <= 0 || configCloseUIOnUnwear.Value)
             {
                 HideUI();
                 return;
