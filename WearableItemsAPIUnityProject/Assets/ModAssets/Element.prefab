@@ -184,11 +184,10 @@ MonoBehaviour:
   m_Script: {fileID: -1054494568, guid: 15430fced0bc5644591c9bda1289e1da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rt: {fileID: 0}
-  parentRM: {fileID: 0}
   button: {fileID: 5248811195982454874}
-  label: 
   icon: {fileID: 2615913860246706696}
+  parentRM: {fileID: 0}
+  label: 
   item: {fileID: 0}
   angleMin: 0
   angleMax: 0

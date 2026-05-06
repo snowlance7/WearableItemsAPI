@@ -13,9 +13,6 @@ namespace WearableItemsAPI
         public PlayerControllerB? playerWornBy { get; private set; }
         public PlayerControllerB? lastPlayerWornBy { get; private set; }
 
-        //public static List<WearableObject> wornItems = new List<WearableObject>();
-        //public static Dictionary<PlayerControllerB, List<WearableObject>> wornItems = new Dictionary<PlayerControllerB, List<WearableObject>>();
-
         public WearableItem wearableItemProperties = null!;
 
         ScanNodeProperties? scanNode;
@@ -33,9 +30,9 @@ namespace WearableItemsAPI
             {
                 lastPlayerWornBy = playerWornBy;
 
-                if (!playerWornBy.isPlayerControlled)
+                if (!playerWornBy.isPlayerControlled && IsServer)
                 {
-                    OnUnWear();
+                    UnwearServerRpc();
                     return;
                 }
             }
@@ -76,6 +73,12 @@ namespace WearableItemsAPI
             WearServerRpc(player.actualClientId);
         }
 
+        public void UnWearItem()
+        {
+            if (playerWornBy == null) { return; }
+            UnwearServerRpc();
+        }
+
         bool CanWear()
         {
             var current = wearableItemProperties;
@@ -94,18 +97,28 @@ namespace WearableItemsAPI
             return true;
         }
 
-        public void UnWearItem()
+        public virtual void OnWear() { }
+
+        public virtual void OnUnWear() { }
+
+        // RPCs
+        [ServerRpc(RequireOwnership = false)]
+        internal void WearServerRpc(ulong clientId)
         {
-            if (playerWornBy == null) { return; }
-            UnwearServerRpc();
+            if (!IsServer) { return; }
+            WearClientRpc(clientId);
         }
 
-        public virtual void OnWear(PlayerControllerB playerWearing)
+        [ClientRpc]
+        internal void WearClientRpc(ulong clientId)
         {
             if (playerWornBy != null) { logger.LogDebug("Player already wearing item"); return; }
-            logger.LogDebug(playerWearing.playerUsername + " wearing " + itemProperties.itemName);
+            PlayerControllerB? player = StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == clientId).FirstOrDefault();
+            if (player == null) { logger.LogError("Couldn't get player from player client id"); return; }
 
-            playerWornBy = playerWearing;
+            logger.LogDebug(player.playerUsername + " wearing " + itemProperties.itemName);
+
+            playerWornBy = player;
             playerWornBy.DiscardHeldObject(false, playerWornBy.NetworkObject);
 
             parentObject = wearableItemProperties.slot == WearableSlot.None ? playerWornBy.transform : playerWornBy.bodyParts[(int)wearableItemProperties.slot];
@@ -114,85 +127,21 @@ namespace WearableItemsAPI
             EnableItemMeshes(_showWearable);
             scanNode?.gameObject.SetActive(false);
 
-            playerWearing.AddWearable(this);
+            player.AddWearable(this);
+            OnWear();
 
             HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.OpenUIKeybind} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
 
-        /*public virtual void OnUnWear() // TODO: Set this up so that it puts item in empty item slot, or if full drops it on the ground. also switch equiped item to the wearable when its unworn
+        [ServerRpc(RequireOwnership = false)]
+        internal void UnwearServerRpc()
         {
-            if (playerWornBy == null) return;
+            if (!IsServer) { return; }
+            UnwearClientRpc();
+        }
 
-            if (!playerWornBy.isPlayerControlled)
-            {
-                logger.LogDebug("Player is dead, unwearing item");
-
-                parentObject = null;
-
-                Transform targetParent = playerWornBy.isInElevator
-                    ? playerWornBy.playersManager.elevatorTransform
-                    : playerWornBy.playersManager.propsContainer;
-
-                transform.SetParent(targetParent, true);
-
-                playerWornBy.SetItemInElevator(
-                    playerWornBy.isInHangarShipRoom,
-                    playerWornBy.isInElevator,
-                    this
-                );
-
-                EnablePhysics(true);
-                startFallingPosition = transform.parent.InverseTransformPoint(transform.position);
-                fallTime = 0f;
-                FallToGround(true);
-            }
-            else if (playerWornBy == localPlayer)
-            {
-                localPlayer.currentlyGrabbingObject = this;
-                localPlayer.grabInvalidated = false;
-
-                if (localPlayer.FirstEmptyItemSlot(this) != -1)
-                {
-                    localPlayer.playerBodyAnimator.SetBool("GrabInvalidated", value: false);
-                    localPlayer.playerBodyAnimator.SetBool("GrabValidated", value: false);
-                    localPlayer.playerBodyAnimator.SetBool("cancelHolding", value: false);
-                    localPlayer.playerBodyAnimator.ResetTrigger("Throw");
-                    localPlayer.SetSpecialGrabAnimationBool(setTrue: true);
-                    localPlayer.isGrabbingObjectAnimation = true;
-                    localPlayer.cursorIcon.enabled = false;
-                    localPlayer.cursorTip.text = "";
-                    localPlayer.twoHanded = itemProperties.twoHanded;
-                    localPlayer.carryWeight = Mathf.Clamp(localPlayer.carryWeight + (itemProperties.weight - 1f), 1f, 10f);
-                    StartOfRound.Instance.SendChangedWeightEvent();
-                    if (itemProperties.grabAnimationTime > 0f)
-                    {
-                        localPlayer.grabObjectAnimationTime = itemProperties.grabAnimationTime;
-                    }
-                    else
-                    {
-                        localPlayer.grabObjectAnimationTime = 0.4f;
-                    }
-                    if (!localPlayer.isTestingPlayer)
-                    {
-                        localPlayer.GrabObjectServerRpc(NetworkObject);
-                    }
-                    if (localPlayer.grabObjectCoroutine != null)
-                    {
-                        StopCoroutine(localPlayer.grabObjectCoroutine);
-                    }
-                    localPlayer.grabObjectCoroutine = StartCoroutine(localPlayer.GrabObject());
-                }
-            }
-
-            playerWornBy.RemoveWearable(this);
-
-            GetComponent<Collider>().enabled = true;
-            scanNode?.gameObject.SetActive(true);
-            EnableItemMeshes(true);
-            playerWornBy = null;
-        }*/
-
-        public virtual void OnUnWear() // TODO: Set this up so that it puts item in empty item slot, or if full drops it on the ground. also switch equiped item to the wearable when its unworn
+        [ClientRpc]
+        internal void UnwearClientRpc()
         {
             if (playerWornBy == null) return;
             PlayerControllerB playerUnwearing = playerWornBy;
@@ -259,36 +208,8 @@ namespace WearableItemsAPI
             GetComponent<Collider>().enabled = true;
             scanNode?.gameObject.SetActive(true);
             EnableItemMeshes(true);
-            playerWornBy = null;
-        }
-
-        // RPCs
-        [ServerRpc(RequireOwnership = false)]
-        protected void WearServerRpc(ulong clientId)
-        {
-            if (!IsServer) { return; }
-            WearClientRpc(clientId);
-        }
-
-        [ClientRpc]
-        protected void WearClientRpc(ulong clientId)
-        {
-            PlayerControllerB? player = StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == clientId).FirstOrDefault();
-            if (player == null) { logger.LogError("Couldn't get player from player client id"); return; }
-            OnWear(player);
-        }
-
-        [ServerRpc(RequireOwnership = false)]
-        protected void UnwearServerRpc()
-        {
-            if (!IsServer) { return; }
-            UnwearClientRpc();
-        }
-
-        [ClientRpc]
-        protected void UnwearClientRpc()
-        {
             OnUnWear();
+            playerWornBy = null;
         }
     }
 }

@@ -1,5 +1,5 @@
-## 1.1.11
-- Tooltip text doesnt say breath instead of Open UI like it was supposed to woops
+## 2.0.0
+- Huge rework
 
 ## 1.1.10
 - Added tooltip to show how to open the inventory

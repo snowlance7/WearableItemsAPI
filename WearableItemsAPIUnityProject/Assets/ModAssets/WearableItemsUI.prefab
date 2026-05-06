@@ -128,7 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -196,9 +196,21 @@ MonoBehaviour:
   radialMenuElementPrefab: {fileID: 3163986721906064144, guid: 4b60a410aabc10f44a5d0bd561ecfbdf,
     type: 3}
   canvas: {fileID: 1218398843714894814}
-  icon: {fileID: 5065069254538970828}
   iconLabel: {fileID: 8149141496725598677}
   animator: {fileID: 2455059479277469644}
+  bodyOutline: {fileID: 0}
+  bodyOutlineParts:
+  - {fileID: 21300000, guid: 0c36a05880f3d9241906149815281a96, type: 3}
+  - {fileID: 21300000, guid: 8311beaf5ee71114da90b77c8795264f, type: 3}
+  - {fileID: 21300000, guid: 580dde97330eaef48bc6cea06249ecc9, type: 3}
+  - {fileID: 21300000, guid: 95d49eb5a6e73b5479584281f1bff99e, type: 3}
+  - {fileID: 21300000, guid: 953331267ff8ae9419dd79f1572f7b1f, type: 3}
+  - {fileID: 21300000, guid: 52b51a69665edcd45b20142ad5c5a418, type: 3}
+  - {fileID: 21300000, guid: b7e19f983edb2b24fa649331106087db, type: 3}
+  - {fileID: 21300000, guid: d1b9521038feee74898814593cdc1b55, type: 3}
+  - {fileID: 21300000, guid: 74e6a25ae892f354bbc8c0761aa6a100, type: 3}
+  - {fileID: 21300000, guid: 69f3aa9bd81bbd04b92ce74d77b6422e, type: 3}
+  - {fileID: 21300000, guid: 4f45cb519e7ae9640a44c2d580c01e46, type: 3}
   ui: {fileID: 0}
 --- !u!95 &2455059479277469644
 Animator:

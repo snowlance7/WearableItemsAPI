@@ -46,7 +46,7 @@ namespace WearableItemsAPI
         [Tooltip("Determines if the wearable is visible to the local player.")]
         public bool showWearableOnClient = true;
 
-        [Tooltip("This is what will show on the button for the wearable in the UI")]
+        [Tooltip("This is what will show on the button for the wearable in the UI. Leave empty to use the items default icon.")]
         public Sprite icon = null!;
     }
 }

@@ -14,7 +14,7 @@ namespace WearableItemsAPI
         {
             try
             {
-                if (WearableUIController.Instance != null && WearableUIController.Instance.ui != null) { return false; }
+                if (WearableUIController.Instance != null && WearableUIController.Instance.radial != null) { return false; }
                 return true;
             }
             catch (System.Exception e)
@@ -30,7 +30,7 @@ namespace WearableItemsAPI
         {
             try
             {
-                if (WearableUIController.Instance != null && WearableUIController.Instance.ui != null) { return false; }
+                if (WearableUIController.Instance != null && WearableUIController.Instance.radial != null) { return false; }
                 return true;
             }
             catch (System.Exception e)

@@ -15,16 +15,16 @@ namespace WearableItemsAPI
     [BepInDependency(LethalCompanyInputUtils.MyPluginInfo.PLUGIN_GUID)]
     internal class Plugin : BaseUnityPlugin
     {
-        internal static Plugin Instance = null!;
+        public static Plugin Instance = null!;
 
-        internal static ManualLogSource logger = null!;
+        public static ManualLogSource logger = null!;
 
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
 
         public static ConfigEntry<bool> configCloseUIOnUnwear = null!;
 
-        private void Awake()
+        public void Awake()
         {
             if (Instance == null)
             {
@@ -46,7 +46,7 @@ namespace WearableItemsAPI
             Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
         }
 
-        private static void InitializeNetworkBehaviours()
+        public static void InitializeNetworkBehaviours()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var type in types)

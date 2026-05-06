@@ -4,17 +4,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using static WearableItemsAPI.Plugin;
+using WearableItemsAPI;
 
-
-[AddComponentMenu("Radial Menu")]
-public class RadialMenu : MonoBehaviour
+internal class RadialMenu : MonoBehaviour
 {
-    [HideInInspector]
-    public RectTransform rt = null!;
+    WearableUIController? ui => WearableUIController.Instance;
+    RectTransform rt = null!;
 
     public Transform elementsContainer = null!;
-
-    public RectTransform selectionFollowerContainer = null!;
 
     public Text textLabel = null!;
 
@@ -71,7 +68,7 @@ public class RadialMenu : MonoBehaviour
 
         rawAngle = Mathf.Atan2(mousePos.y - rt.position.y, mousePos.x - rt.position.x) * Mathf.Rad2Deg;
 
-        currentAngle = normalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
+        currentAngle = NormalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
 
         if (angleOffset != 0 && elementCount > 0)
         {
@@ -79,31 +76,30 @@ public class RadialMenu : MonoBehaviour
 
             if (elements[index] != null)
             {
-                selectButton(index);
+                SelectButton(index);
 
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                     ExecuteEvents.Execute(elements[index].button.gameObject, pointer, ExecuteEvents.submitHandler);
             }
         }
-
-        if (selectionFollowerContainer != null)
-            selectionFollowerContainer.rotation = Quaternion.Euler(0, 0, rawAngle + 270);
     }
 
-    private void selectButton(int i)
+    private void SelectButton(int i)
     {
         if (elements[i].active == false)
         {
             elements[i].highlightThisElement(pointer);
 
-            if (previousActiveIndex != i) 
+            ui?.SetBodyOutline(elements[i].item.wearableItemProperties.slot);
+
+            if (previousActiveIndex != i)
                 elements[previousActiveIndex].unHighlightThisElement(pointer);
         }
 
         previousActiveIndex = i;
     }
 
-    private float normalizeAngle(float angle)
+    private float NormalizeAngle(float angle)
     {
         angle = angle % 360f;
 

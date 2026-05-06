@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static WearableItemsAPI.Plugin;
+using static WearableItemsAPI.WearableItem;
 
 namespace WearableItemsAPI
 {
@@ -17,10 +18,13 @@ namespace WearableItemsAPI
         [SerializeField] Transform canvas = null!;
         [SerializeField] TMP_Text iconLabel = null!;
         [SerializeField] Animator animator = null!;
+        [SerializeField] Sprite[] bodyOutlineParts = null!;
 
-        [HideInInspector] public RadialMenu? ui;
+        [HideInInspector] public RadialMenu? radial;
 
-        bool uiOpen => ui != null;
+        Image? selfHighlight;
+
+        public bool uiOpen => radial != null;
         bool openingUI;
 
         public static void Init()
@@ -50,6 +54,15 @@ namespace WearableItemsAPI
 
             Instance = this;
             DontDestroyOnLoad(gameObject); // TODO: Test
+
+            var selfRedObj = HUDManager.Instance.selfRedCanvasGroup?.gameObject;
+            if (selfRedObj != null)
+            {
+                selfHighlight = Instantiate(selfRedObj, selfRedObj.transform.parent).GetComponent<Image>();
+                selfHighlight.sprite = null;
+                selfHighlight.gameObject.GetComponent<CanvasGroup>().alpha = 1f;
+                selfHighlight.color = Color.white;
+            }
 
             logger.LogDebug("UIControllerScript: Start() complete");
         }
@@ -89,8 +102,8 @@ namespace WearableItemsAPI
             logger.LogDebug("Hiding UI");
 
             openingUI = false;
-            GameObject.Destroy(ui?.gameObject);
-            ui = null;
+            GameObject.Destroy(radial?.gameObject);
+            radial = null;
             animator.SetBool("open", false);
 
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -104,41 +117,49 @@ namespace WearableItemsAPI
         {
             if (!openingUI) { return; }
 
-            if (ui != null)
+            if (radial != null)
             {
-                GameObject.Destroy(ui.gameObject);
-                ui = null;
+                GameObject.Destroy(radial.gameObject);
+                radial = null;
             }
 
-            ui = Instantiate(radialMenuPrefab, canvas).GetComponent<RadialMenu>();
+            radial = Instantiate(radialMenuPrefab, canvas).GetComponent<RadialMenu>();
 
             foreach (var item in localPlayer.GetWornItems().ToList())
             {
-                RadialMenuElement element = Instantiate(radialMenuElementPrefab, ui.elementsContainer).GetComponent<RadialMenuElement>();
+                RadialMenuElement element = Instantiate(radialMenuElementPrefab, radial.elementsContainer).GetComponent<RadialMenuElement>();
                 element.item = item;
                 element.label = item.itemProperties.itemName;
                 element.icon.sprite = item.wearableItemProperties.icon != null ? item.wearableItemProperties.icon : item.itemProperties.itemIcon;
                 element.button.onClick.AddListener(() => OnClickElement(element));
-                ui.elements.Add(element);
+                radial.elements.Add(element);
             }
 
-            ui.Rebuild();
+            radial.Rebuild();
         }
 
         public void OnClickElement(RadialMenuElement element)
         {
             element.item.UnWearItem();
 
-            ui!.elements.Remove(element);
+            radial!.elements.Remove(element);
             Destroy(element.gameObject);
 
-            if (ui.elements.Count <= 0 || configCloseUIOnUnwear.Value)
+            if (radial.elements.Count <= 0 || configCloseUIOnUnwear.Value)
             {
                 HideUI();
                 return;
             }
 
-            ui.Rebuild();
+            radial.Rebuild();
+        }
+
+        public void SetBodyOutline(WearableSlot slot)
+        {
+            if (selfHighlight == null) { return; }
+
+            int index = (int)slot;
+            selfHighlight.sprite = index >= 0 ? bodyOutlineParts[index] : null;
         }
     }
 }

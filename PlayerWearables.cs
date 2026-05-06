@@ -21,12 +21,12 @@ namespace WearableItemsAPI
             return list;
         }
 
-        public static void AddWearable(this PlayerControllerB player, WearableObject item)
+        internal static void AddWearable(this PlayerControllerB player, WearableObject item)
         {
             player.GetWornItems().Add(item);
         }
 
-        public static void RemoveWearable(this PlayerControllerB player, WearableObject item)
+        internal static void RemoveWearable(this PlayerControllerB player, WearableObject item)
         {
             player.GetWornItems().Remove(item);
         }

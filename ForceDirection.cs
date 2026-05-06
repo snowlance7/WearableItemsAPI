@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 
-[AddComponentMenu("Radial Menu Force Direction")]
-[ExecuteInEditMode]
-public class ForceDirection : MonoBehaviour
+internal class ForceDirection : MonoBehaviour
 {
     private RectTransform rt;
     public float forcedZRotation = 0f;

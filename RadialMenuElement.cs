@@ -3,8 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using WearableItemsAPI;
 
-[AddComponentMenu("Radial Menu Element")]
-public class RadialMenuElement : MonoBehaviour
+internal class RadialMenuElement : MonoBehaviour
 {
     public Button button = null!;
 

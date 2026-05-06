@@ -4,11 +4,10 @@
 
 This API can be used by modders to add wearable items or scrap to the game. Features a customizable UI for equiping different clothing or items. Wiki coming soon.
 
-## Planned Features
+## Future Changes
 
 - A lot more customization of layout, button backgrounds, UI backgrounds, and more
-- Separate UI instances allowing you to have multiple inventories with different keybinds to access them
-- Ability to add more slots (ex: necklace slot, belt slot, etc)
+- Better visuals for UI
 
 ## Contact
 
