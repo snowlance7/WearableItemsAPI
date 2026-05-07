@@ -23,6 +23,7 @@ namespace WearableItemsAPI
         [HideInInspector] public RadialMenu? radial;
 
         Image? selfHighlight;
+        CanvasGroup? selfHighlightCanvasGroup;
 
         public bool uiOpen => radial != null;
         bool openingUI;
@@ -58,9 +59,13 @@ namespace WearableItemsAPI
             var selfRedObj = HUDManager.Instance.selfRedCanvasGroup?.gameObject;
             if (selfRedObj != null)
             {
-                selfHighlight = Instantiate(selfRedObj, selfRedObj.transform.parent).GetComponent<Image>();
+                GameObject selfHighlightObj = Instantiate(selfRedObj, selfRedObj.transform.parent);
+                selfHighlightObj.name = "WISelfHighlight";
+                selfHighlight = selfHighlightObj.GetComponent<Image>();
+                selfHighlightCanvasGroup = selfHighlightObj.GetComponent<CanvasGroup>();
+
+                selfHighlightCanvasGroup.alpha = 0;
                 selfHighlight.sprite = null;
-                selfHighlight.gameObject.GetComponent<CanvasGroup>().alpha = 1f;
                 selfHighlight.color = Color.white;
             }
 
@@ -111,6 +116,7 @@ namespace WearableItemsAPI
             localPlayer.disableMoveInput = false;
             localPlayer.disableInteract = false;
             localPlayer.disableLookInput = false;
+            SetBodyOutline(WearableSlot.None);
         }
 
         public void BuildUI() // Animation
@@ -156,10 +162,11 @@ namespace WearableItemsAPI
 
         public void SetBodyOutline(WearableSlot slot)
         {
-            if (selfHighlight == null) { return; }
+            if (selfHighlight == null || selfHighlightCanvasGroup == null) { return; }
 
             int index = (int)slot;
             selfHighlight.sprite = index >= 0 ? bodyOutlineParts[index] : null;
+            selfHighlightCanvasGroup.alpha = index >= 0 ? 1 : 0;
         }
     }
 }
