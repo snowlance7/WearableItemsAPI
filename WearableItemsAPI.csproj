@@ -81,6 +81,12 @@
     <ItemGroup>
       <Folder Include="Assets\" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Snowlance.SnowyLib">
+        <HintPath>..\..\..\AppData\Roaming\com.kesomannen.gale\lethal-company\profiles\Testing\BepInEx\plugins\Snowlance-SnowyLib\Snowlance.SnowyLib.dll</HintPath>
+      </Reference>
+    </ItemGroup>
   
   <PropertyGroup>
     <GeneratePluginInfo>true</GeneratePluginInfo>

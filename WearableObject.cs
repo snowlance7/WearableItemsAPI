@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using static WearableItemsAPI.Plugin;
 using static WearableItemsAPI.WearableItem;
+using SnowyLib;
 
 namespace WearableItemsAPI
 {
@@ -167,40 +168,7 @@ namespace WearableItemsAPI
 
             if (playerUnwearing == localPlayer)
             {
-                localPlayer.currentlyGrabbingObject = this;
-                localPlayer.grabInvalidated = false;
-
-                if (localPlayer.FirstEmptyItemSlot(this) != -1)
-                {
-                    localPlayer.playerBodyAnimator.SetBool("GrabInvalidated", value: false);
-                    localPlayer.playerBodyAnimator.SetBool("GrabValidated", value: false);
-                    localPlayer.playerBodyAnimator.SetBool("cancelHolding", value: false);
-                    localPlayer.playerBodyAnimator.ResetTrigger("Throw");
-                    localPlayer.SetSpecialGrabAnimationBool(setTrue: true);
-                    localPlayer.isGrabbingObjectAnimation = true;
-                    localPlayer.cursorIcon.enabled = false;
-                    localPlayer.cursorTip.text = "";
-                    localPlayer.twoHanded = itemProperties.twoHanded;
-                    localPlayer.carryWeight = Mathf.Clamp(localPlayer.carryWeight + (itemProperties.weight - 1f), 1f, 10f);
-                    StartOfRound.Instance.SendChangedWeightEvent();
-                    if (itemProperties.grabAnimationTime > 0f)
-                    {
-                        localPlayer.grabObjectAnimationTime = itemProperties.grabAnimationTime;
-                    }
-                    else
-                    {
-                        localPlayer.grabObjectAnimationTime = 0.4f;
-                    }
-                    if (!localPlayer.isTestingPlayer)
-                    {
-                        localPlayer.GrabObjectServerRpc(NetworkObject);
-                    }
-                    if (localPlayer.grabObjectCoroutine != null)
-                    {
-                        StopCoroutine(localPlayer.grabObjectCoroutine);
-                    }
-                    localPlayer.grabObjectCoroutine = StartCoroutine(localPlayer.GrabObject());
-                }
+                localPlayer.GrabObject(this);
             }
 
             playerWornBy.RemoveWearable(this);
