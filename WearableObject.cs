@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using static WearableItemsAPI.Plugin;
 using static WearableItemsAPI.WearableItem;
-using SnowyLib;
+//using SnowyLib;
 
 namespace WearableItemsAPI
 {
@@ -168,7 +168,7 @@ namespace WearableItemsAPI
 
             if (playerUnwearing == localPlayer)
             {
-                localPlayer.GrabObject(this);
+                //localPlayer.GrabGrabbableObject(this);
             }
 
             playerWornBy.RemoveWearable(this);
