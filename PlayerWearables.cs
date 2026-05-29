@@ -31,7 +31,7 @@ namespace WearableItemsAPI
             player.GetWornItems().Remove(item);
         }
 
-        public static void UpdateWearables()
+        internal static void UpdateWearables()
         {
             foreach (var player in wearableLookup.Keys.ToList())
             {

@@ -35,6 +35,8 @@ namespace WearableItemsAPI
 
             harmony.PatchAll();
 
+            localPlayer.playerBodyAnimator.GetBoneTransform(HumanBodyBones.)
+
             InitializeNetworkBehaviours();
 
             configCloseUIOnUnwear = Config.Bind("General", "Close UI On Unwear", true, "If true, the UI will always close when unequiping a wearable");

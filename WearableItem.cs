@@ -6,7 +6,7 @@ namespace WearableItemsAPI
     [CreateAssetMenu(menuName = "WearableItemsAPI/WearableItem")]
     public class WearableItem : ScriptableObject
     {
-        public enum WearableSlot
+        public enum WearableSlot // TODO: Add more slots or custom transforms players can use for more precise positioning, something like foreach (Transform t in playerModel.GetComponentsInChildren<Transform>(true)) { Debug.Log(t.name); }
         {
             None = -1,
             Head = 0,
