@@ -22,8 +22,6 @@ namespace WearableItemsAPI
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
 
-        public static ConfigEntry<bool> configCloseUIOnUnwear = null!;
-
         public void Awake()
         {
             if (Instance == null)
@@ -35,11 +33,7 @@ namespace WearableItemsAPI
 
             harmony.PatchAll();
 
-            localPlayer.playerBodyAnimator.GetBoneTransform(HumanBodyBones.)
-
             InitializeNetworkBehaviours();
-
-            configCloseUIOnUnwear = Config.Bind("General", "Close UI On Unwear", true, "If true, the UI will always close when unequiping a wearable");
 
             var assets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Info.Location), "wearable_items_assets"));
             WearableUIController.prefab = assets.LoadAsset<GameObject>("Assets/ModAssets/WearableItemsUI.prefab");

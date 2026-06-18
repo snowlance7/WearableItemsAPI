@@ -1,11 +1,9 @@
 ﻿using GameNetcodeStuff;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using static WearableItemsAPI.Plugin;
 using static WearableItemsAPI.WearableItem;
-//using SnowyLib;
 
 namespace WearableItemsAPI
 {
@@ -33,6 +31,7 @@ namespace WearableItemsAPI
 
                 if (!playerWornBy.isPlayerControlled && IsServer)
                 {
+                    logger.LogDebug($"Player ({playerWornBy.playerUsername}) died or disconnected, unwearing item {itemProperties.itemName}");
                     UnwearServerRpc();
                     return;
                 }
@@ -44,9 +43,9 @@ namespace WearableItemsAPI
             if (parentObject != null && playerWornBy != null)
             {
                 base.transform.rotation = parentObject.rotation;
-                base.transform.Rotate(wearableItemProperties.wornRotationOffset);
+                base.transform.Rotate(wearableItemProperties.useLocalOffsets && localPlayer == playerWornBy ? wearableItemProperties.wornRotationOffsetLocal : wearableItemProperties.wornRotationOffset);
                 base.transform.position = parentObject.position;
-                Vector3 positionOffset = wearableItemProperties.wornPositionOffset;
+                Vector3 positionOffset = wearableItemProperties.useLocalOffsets && localPlayer == playerWornBy ? wearableItemProperties.wornPositionOffsetLocal : wearableItemProperties.wornPositionOffset;
                 positionOffset = parentObject.rotation * positionOffset;
                 base.transform.position += positionOffset;
 
@@ -80,7 +79,7 @@ namespace WearableItemsAPI
             UnwearServerRpc();
         }
 
-        bool CanWear()
+        public bool CanWear()
         {
             var current = wearableItemProperties;
 
@@ -102,6 +101,37 @@ namespace WearableItemsAPI
 
         public virtual void OnUnWear() { }
 
+        internal Transform GetWearableParentObject()
+        {
+            var p = wearableItemProperties;
+
+            Transform root = playerWornBy!.playerBodyAnimator.transform;
+
+            if (localPlayer == playerWornBy)
+            {
+                if (!string.IsNullOrWhiteSpace(p.boneTransformLocal))
+                {
+                    Transform? t = root.Find("ScavengerModelArmsOnly")?.Find(p.boneTransformLocal);
+
+                    if (t != null)
+                        return t;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(p.boneTransform))
+            {
+                Transform? t = root.Find("spine")?.Find(p.boneTransform);
+
+                if (t != null)
+                    return t;
+            }
+
+            if (p.slot != WearableSlot.None)
+                return playerWornBy.bodyParts[(int)p.slot];
+
+            return playerWornBy.transform;
+        }
+
         // RPCs
         [ServerRpc(RequireOwnership = false)]
         internal void WearServerRpc(ulong clientId)
@@ -122,7 +152,8 @@ namespace WearableItemsAPI
             playerWornBy = player;
             playerWornBy.DiscardHeldObject(false, playerWornBy.NetworkObject);
 
-            parentObject = wearableItemProperties.slot == WearableSlot.None ? playerWornBy.transform : playerWornBy.bodyParts[(int)wearableItemProperties.slot];
+            parentObject = GetWearableParentObject();
+
             base.gameObject.GetComponent<Collider>().enabled = false;
             bool _showWearable = localPlayer == playerWornBy ? wearableItemProperties.showWearableOnClient : wearableItemProperties.showWearable;
             EnableItemMeshes(_showWearable);
@@ -131,7 +162,7 @@ namespace WearableItemsAPI
             player.AddWearable(this);
             OnWear();
 
-            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.OpenUIKeybind} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
+            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.Instance.OpenUIKey_BindingDisplayString} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -164,11 +195,11 @@ namespace WearableItemsAPI
             EnablePhysics(true);
             startFallingPosition = transform.parent.InverseTransformPoint(transform.position);
             fallTime = 0f;
-            FallToGround(true);
+            FallToGround();
 
             if (playerUnwearing == localPlayer)
             {
-                //localPlayer.GrabGrabbableObject(this);
+                localPlayer.GrabGrabbableObject(this);
             }
 
             playerWornBy.RemoveWearable(this);

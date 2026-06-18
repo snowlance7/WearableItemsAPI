@@ -76,7 +76,7 @@ namespace WearableItemsAPI
         {
             PlayerWearables.UpdateWearables();
 
-            iconLabel.text = $"[{WearableItemsInputs.OpenUIKeybind}]";
+            iconLabel.text = $"[{WearableItemsInputs.Instance.OpenUIKey_BindingDisplayString}]";
 
             if (uiOpen && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.tabKey.wasPressedThisFrame))
                 HideUI();
@@ -151,13 +151,7 @@ namespace WearableItemsAPI
             radial!.elements.Remove(element);
             Destroy(element.gameObject);
 
-            if (radial.elements.Count <= 0 || configCloseUIOnUnwear.Value)
-            {
-                HideUI();
-                return;
-            }
-
-            radial.Rebuild();
+            HideUI();
         }
 
         public void SetBodyOutline(WearableSlot slot)
