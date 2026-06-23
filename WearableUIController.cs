@@ -8,7 +8,7 @@ using static WearableItemsAPI.WearableItem;
 
 namespace WearableItemsAPI
 {
-    internal class WearableUIController : MonoBehaviour
+    internal class WearableUIController : MonoBehaviour // TODO: Set up wiki
     {
         public static GameObject prefab = null!;
         public static WearableUIController? Instance;
@@ -92,30 +92,31 @@ namespace WearableItemsAPI
         {
             logger.LogDebug("Showing UI");
 
-            openingUI = true;
-            animator.SetBool("open", true);
-
-            UnityEngine.Cursor.lockState = CursorLockMode.None;
-            UnityEngine.Cursor.visible = true;
             localPlayer.disableMoveInput = true;
             localPlayer.disableInteract = true;
             localPlayer.disableLookInput = true;
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
+
+            openingUI = true;
+            animator.SetBool("open", true);
         }
 
         public void HideUI()
         {
             logger.LogDebug("Hiding UI");
 
+            localPlayer.disableMoveInput = false;
+            localPlayer.disableInteract = false;
+            localPlayer.disableLookInput = false;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
+
             openingUI = false;
             GameObject.Destroy(radial?.gameObject);
             radial = null;
             animator.SetBool("open", false);
 
-            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-            UnityEngine.Cursor.visible = false;
-            localPlayer.disableMoveInput = false;
-            localPlayer.disableInteract = false;
-            localPlayer.disableLookInput = false;
             SetBodyOutline(WearableSlot.None);
         }
 
