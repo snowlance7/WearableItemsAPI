@@ -83,6 +83,7 @@
 
     <ItemGroup>
       <Folder Include="Assets\" />
+      <Folder Include="Wiki\" />
     </ItemGroup>
 
     <ItemGroup>

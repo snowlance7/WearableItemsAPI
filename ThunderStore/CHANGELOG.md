@@ -1,5 +1,5 @@
-## 2.0.0
-- Huge rework
+## 0.2.0
+- Rework
 
 ## 1.1.10
 - Added tooltip to show how to open the inventory
