@@ -6,12 +6,33 @@ using static WearableItemsAPI.Core.WearableItem;
 
 namespace WearableItemsAPI.Core
 {
-    public abstract class WearableObject : PhysicsProp
+    public class WearableObject : PhysicsProp
     {
         internal static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
+
+        /// <remarks>
+        /// This is automatically set by the API and should not be set manually.
+        /// </remarks>
+        /// <returns>
+        /// The player currently wearing this item. Returns null if no player is wearing it.
+        /// </returns>
         public PlayerControllerB? playerWornBy { get; private set; }
+
+        /// <remarks>
+        /// This is automatically set by the API and should not be set manually.
+        /// </remarks>
+        /// <returns>
+        /// The last player who wore this item. Returns null if no player has worn it.
+        /// </returns>
         public PlayerControllerB? lastPlayerWornBy { get; private set; }
 
+        /// <summary>
+        /// Information about how the item should be worn, such as its position, rotation, and other wearable-specific settings.
+        /// </summary>
+        /// <remarks>
+        /// This should be set in Unity or in the Awake method.
+        /// </remarks>
+        [Tooltip("Information about how the item should be worn, such as its position, rotation, and other wearable-specific settings.")]
         public WearableItem wearableItemProperties = null!;
 
         ScanNodeProperties? scanNode;
@@ -32,7 +53,7 @@ namespace WearableItemsAPI.Core
                 if (!playerWornBy.isPlayerControlled && IsServer)
                 {
                     Debug.Log($"Player ({playerWornBy.playerUsername}) died or disconnected, unwearing item {itemProperties.itemName}");
-                    UnwearServerRpc();
+                    UnwearRpc();
                     return;
                 }
             }
@@ -67,24 +88,44 @@ namespace WearableItemsAPI.Core
                 WearItem(playerHeldBy);
         }
 
+        /// <summary>
+        /// Wears the item on the local player.
+        /// </summary>
         public void WearItem()
         {
             if (playerWornBy != null || !CanWear(localPlayer)) { return; }
-            WearServerRpc(localPlayer.actualClientId);
+            WearRpc(localPlayer.actualClientId);
         }
 
+        /// <summary>
+        /// Wears the item on a provided player.
+        /// </summary>
+        /// <param name="player">The player the wearable should be worn on.</param>
         public void WearItem(PlayerControllerB player)
         {
             if (playerWornBy != null || !CanWear(player)) { return; }
-            WearServerRpc(player.actualClientId);
+            WearRpc(player.actualClientId);
         }
 
+        /// <summary>
+        /// Unwears the item for the player wearing it.
+        /// </summary>
+        /// <remarks>
+        /// Does nothing if a player isn't wearing this item.
+        /// </remarks>
         public void UnWearItem()
         {
             if (playerWornBy == null) { return; }
-            UnwearServerRpc();
+            UnwearRpc();
         }
 
+        /// <summary>
+        /// Determines if the provided player can wear this item.
+        /// </summary>
+        /// <param name="player">The player to wear this item.</param>
+        /// <returns>
+        /// True if the player can wear the item.
+        /// </returns>
         public bool CanWear(PlayerControllerB player)
         {
             var current = wearableItemProperties;
@@ -103,8 +144,20 @@ namespace WearableItemsAPI.Core
             return true;
         }
 
+        /// <summary>
+        /// What should happen when a player wears this item.
+        /// </summary>
+        /// <remarks>
+        /// This is automatically called when the player wears the item. It should not be called manually.
+        /// </remarks>
         public virtual void OnWear() { }
 
+        /// <summary>
+        /// What should happen when a player unwears this item.
+        /// </summary>
+        /// <remarks>
+        /// This is automatically called when the player unwears the item. It should not be called manually.
+        /// </remarks>
         public virtual void OnUnWear() { }
 
         internal Transform GetWearableParentObject()
@@ -139,15 +192,9 @@ namespace WearableItemsAPI.Core
         }
 
         // RPCs
-        [ServerRpc(RequireOwnership = false)]
-        internal void WearServerRpc(ulong clientId)
-        {
-            if (!IsServer) { return; }
-            WearClientRpc(clientId);
-        }
 
-        [ClientRpc]
-        internal void WearClientRpc(ulong clientId)
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        internal void WearRpc(ulong clientId)
         {
             if (playerWornBy != null) { Debug.Log("Player already wearing item"); return; }
             PlayerControllerB? player = StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == clientId).FirstOrDefault();
@@ -169,15 +216,8 @@ namespace WearableItemsAPI.Core
             OnWear();
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        internal void UnwearServerRpc()
-        {
-            if (!IsServer) { return; }
-            UnwearClientRpc();
-        }
-
-        [ClientRpc]
-        internal void UnwearClientRpc()
+        [Rpc(SendTo.Everyone, RequireOwnership = false)]
+        internal void UnwearRpc()
         {
             if (playerWornBy == null) return;
             PlayerControllerB playerUnwearing = playerWornBy;

@@ -2,12 +2,7 @@
 
 ## Description
 
-This API can be used by modders to add wearable items or scrap to the game. Features a UI for equipping different clothing or items. Wiki coming soon.
-
-## Future Changes
-
-- A lot more customization of layout, button backgrounds, UI backgrounds, and more
-- Better visuals for UI
+This API can be used by modders to add wearable items or scrap to the game. Features a UI for equipping different clothing or accessories. See the wiki for implementation.
 
 ## Contact
 

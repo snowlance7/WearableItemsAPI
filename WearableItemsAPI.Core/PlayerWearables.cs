@@ -10,6 +10,9 @@ namespace WearableItemsAPI.Core
 
         internal static UnityEvent OnWearablesUpdate = new UnityEvent();
 
+        /// <summary>
+        /// Gets all of the player's currently worn items.
+        /// </summary>
         public static List<WearableObject> GetWearables(this PlayerControllerB player)
         {
             if (!wearableLookup.TryGetValue(player, out var list))
