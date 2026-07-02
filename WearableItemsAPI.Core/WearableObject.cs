@@ -2,13 +2,13 @@
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using static WearableItemsAPI.Plugin;
-using static WearableItemsAPI.WearableItem;
+using static WearableItemsAPI.Core.WearableItem;
 
-namespace WearableItemsAPI
+namespace WearableItemsAPI.Core
 {
     public abstract class WearableObject : PhysicsProp
     {
+        internal static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
         public PlayerControllerB? playerWornBy { get; private set; }
         public PlayerControllerB? lastPlayerWornBy { get; private set; }
 
@@ -31,7 +31,7 @@ namespace WearableItemsAPI
 
                 if (!playerWornBy.isPlayerControlled && IsServer)
                 {
-                    logger.LogDebug($"Player ({playerWornBy.playerUsername}) died or disconnected, unwearing item {itemProperties.itemName}");
+                    Debug.Log($"Player ({playerWornBy.playerUsername}) died or disconnected, unwearing item {itemProperties.itemName}");
                     UnwearServerRpc();
                     return;
                 }
@@ -67,9 +67,15 @@ namespace WearableItemsAPI
                 WearItem(playerHeldBy);
         }
 
+        public void WearItem()
+        {
+            if (playerWornBy != null || !CanWear(localPlayer)) { return; }
+            WearServerRpc(localPlayer.actualClientId);
+        }
+
         public void WearItem(PlayerControllerB player)
         {
-            if (playerWornBy != null || !CanWear()) { return; }
+            if (playerWornBy != null || !CanWear(player)) { return; }
             WearServerRpc(player.actualClientId);
         }
 
@@ -79,11 +85,11 @@ namespace WearableItemsAPI
             UnwearServerRpc();
         }
 
-        public bool CanWear()
+        public bool CanWear(PlayerControllerB player)
         {
             var current = wearableItemProperties;
 
-            foreach (var item in localPlayer.GetWornItems())
+            foreach (var item in localPlayer.GetWearables())
             {
                 var other = item.wearableItemProperties;
 
@@ -143,11 +149,11 @@ namespace WearableItemsAPI
         [ClientRpc]
         internal void WearClientRpc(ulong clientId)
         {
-            if (playerWornBy != null) { logger.LogDebug("Player already wearing item"); return; }
+            if (playerWornBy != null) { Debug.Log("Player already wearing item"); return; }
             PlayerControllerB? player = StartOfRound.Instance.allPlayerScripts.Where(x => x.actualClientId == clientId).FirstOrDefault();
-            if (player == null) { logger.LogError("Couldn't get player from player client id"); return; }
+            if (player == null) { Debug.LogError("Couldn't get player from player client id"); return; }
 
-            logger.LogDebug(player.playerUsername + " wearing " + itemProperties.itemName);
+            Debug.Log(player.playerUsername + " wearing " + itemProperties.itemName);
 
             playerWornBy = player;
             playerWornBy.DiscardHeldObject(false, playerWornBy.NetworkObject);
@@ -161,8 +167,6 @@ namespace WearableItemsAPI
 
             player.AddWearable(this);
             OnWear();
-
-            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.Instance.OpenUIKey_BindingDisplayString} to open the Wearable Items UI", false, true, "WearableItemsAPITip1"); // TODO: Test this
         }
 
         [ServerRpc(RequireOwnership = false)]

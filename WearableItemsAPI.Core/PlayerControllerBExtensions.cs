@@ -1,12 +1,10 @@
 ﻿using GameNetcodeStuff;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-using static WearableItemsAPI.Plugin;
 
-namespace WearableItemsAPI
+namespace WearableItemsAPI.Core
 {
-    public static class PlayerControllerBExtensions
+    internal static class PlayerControllerBExtensions
     {
         public static bool GrabGrabbableObject(this PlayerControllerB player, GrabbableObject grabbableObject)
         {

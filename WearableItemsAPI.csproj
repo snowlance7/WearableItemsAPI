@@ -46,10 +46,13 @@
     </PropertyGroup>
     <ItemGroup>
       <Compile Remove="bin\**" />
+      <Compile Remove="WearableItemsAPI.Core\**" />
       <Compile Remove="WearableItemsAPIUnityProject\**" />
       <EmbeddedResource Remove="bin\**" />
+      <EmbeddedResource Remove="WearableItemsAPI.Core\**" />
       <EmbeddedResource Remove="WearableItemsAPIUnityProject\**" />
       <None Remove="bin\**" />
+      <None Remove="WearableItemsAPI.Core\**" />
       <None Remove="WearableItemsAPIUnityProject\**" />
     </ItemGroup>
     <ItemGroup>
@@ -80,6 +83,12 @@
 
     <ItemGroup>
       <Folder Include="Assets\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Snowlance.WearableItemsAPI.Core">
+        <HintPath>WearableItemsAPI.Core\bin\Debug\netstandard2.1\Snowlance.WearableItemsAPI.Core.dll</HintPath>
+      </Reference>
     </ItemGroup>
   
   <PropertyGroup>

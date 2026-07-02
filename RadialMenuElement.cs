@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using WearableItemsAPI;
+using WearableItemsAPI.Core;
 
 internal class RadialMenuElement : MonoBehaviour
 {

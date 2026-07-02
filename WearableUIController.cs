@@ -3,8 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using WearableItemsAPI.Core;
+using static WearableItemsAPI.Core.WearableItem;
 using static WearableItemsAPI.Plugin;
-using static WearableItemsAPI.WearableItem;
 
 namespace WearableItemsAPI
 {
@@ -16,6 +17,8 @@ namespace WearableItemsAPI
         [SerializeField] GameObject radialMenuPrefab = null!;
         [SerializeField] GameObject radialMenuElementPrefab = null!;
         [SerializeField] Transform canvas = null!;
+        [SerializeField] GameObject iconObj = null!;
+        [SerializeField] Image icon = null!;
         [SerializeField] TMP_Text iconLabel = null!;
         [SerializeField] Animator animator = null!;
         [SerializeField] Sprite[] bodyOutlineParts = null!;
@@ -27,6 +30,8 @@ namespace WearableItemsAPI
 
         public bool uiOpen => radial != null;
         bool openingUI;
+
+        bool iconEnabled;
 
         public static void Init()
         {
@@ -40,6 +45,7 @@ namespace WearableItemsAPI
             if (Instance == this)
             {
                 Instance = null;
+                PlayerWearables.OnWearablesUpdate.RemoveListener(UpdateIcon);
             }
         }
 
@@ -69,23 +75,30 @@ namespace WearableItemsAPI
                 selfHighlight.color = Color.white;
             }
 
+            PlayerWearables.OnWearablesUpdate.AddListener(UpdateIcon);
+
             logger.LogDebug("UIControllerScript: Start() complete");
         }
 
         public void Update()
         {
-            PlayerWearables.UpdateWearables();
-
             iconLabel.text = $"[{WearableItemsInputs.Instance.OpenUIKey_BindingDisplayString}]";
 
             if (uiOpen && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.tabKey.wasPressedThisFrame))
                 HideUI();
             
-            if (WearableItemsInputs.Instance.OpenUIKey.WasPressedThisFrame() && localPlayer.CheckConditionsForEmote() && localPlayer.GetWornItems().Count > 0)
+            if (WearableItemsInputs.Instance.OpenUIKey.WasPressedThisFrame() && localPlayer.CheckConditionsForEmote() && localPlayer.GetWearables().Count > 0)
             {
                 if (!uiOpen) { ShowUI(); }
                 else { HideUI(); }
             }
+        }
+
+        public void UpdateIcon()
+        {
+            iconObj.SetActive(localPlayer.GetWearables().Count > 0);
+            icon.color = new Color32((byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), 200);
+            HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.Instance.OpenUIKey_BindingDisplayString} to open the Wearable Items UI", false, true, "WearableItemsAPITip1");
         }
 
         public void ShowUI()
@@ -132,7 +145,7 @@ namespace WearableItemsAPI
 
             radial = Instantiate(radialMenuPrefab, canvas).GetComponent<RadialMenu>();
 
-            foreach (var item in localPlayer.GetWornItems().ToList())
+            foreach (var item in localPlayer.GetWearables().ToList())
             {
                 RadialMenuElement element = Instantiate(radialMenuElementPrefab, radial.elementsContainer).GetComponent<RadialMenuElement>();
                 element.item = item;

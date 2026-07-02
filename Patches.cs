@@ -1,12 +1,11 @@
-﻿using BepInEx.Logging;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
 using static WearableItemsAPI.Plugin;
 
 namespace WearableItemsAPI
 {
     [HarmonyPatch]
-    internal class Patches
+    internal static class Patches
     {
         [HarmonyPrefix]
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.OpenQuickMenu))]

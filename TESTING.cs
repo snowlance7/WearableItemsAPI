@@ -5,7 +5,7 @@ using static WearableItemsAPI.Plugin;
 namespace WearableItemsAPI
 {
     [HarmonyPatch]
-    public class TESTING : MonoBehaviour
+    internal class TESTING : MonoBehaviour
     {
         [HarmonyPostfix, HarmonyPatch(typeof(HUDManager), nameof(HUDManager.PingScan_performed))]
         public static void PingScan_performedPostFix()
