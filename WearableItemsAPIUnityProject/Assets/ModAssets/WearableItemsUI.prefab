@@ -85,7 +85,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3557738035805137719
 RectTransform:
   m_ObjectHideFlags: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5065069254538970828}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -217,12 +217,10 @@ MonoBehaviour:
   radialMenuElementPrefab: {fileID: 3163986721906064144, guid: 4b60a410aabc10f44a5d0bd561ecfbdf,
     type: 3}
   canvas: {fileID: 1218398843714894814}
-  iconObj: {fileID: 5065069254538970828}
   icon: {fileID: 5125379512789257282}
   iconLabel: {fileID: 8149141496725598677}
   animator: {fileID: 2455059479277469644}
   bodyOutlineParts:
-  - {fileID: 21300000, guid: b43f2b5a391bb7f4a90bb6aead30410e, type: 3}
   - {fileID: 21300000, guid: 0c36a05880f3d9241906149815281a96, type: 3}
   - {fileID: 21300000, guid: 8311beaf5ee71114da90b77c8795264f, type: 3}
   - {fileID: 21300000, guid: 580dde97330eaef48bc6cea06249ecc9, type: 3}
@@ -287,7 +285,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8476554566231946460}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 

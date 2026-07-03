@@ -17,8 +17,6 @@ namespace WearableItemsAPI.UI
 
         [HideInInspector] public List<RadialMenuElement> elements = new List<RadialMenuElement>();
 
-        float globalOffset = 0f;
-
         float currentAngle = 0f;
 
         int index = 0;
@@ -44,10 +42,11 @@ namespace WearableItemsAPI.UI
 
                 element.parentRM = this;
                 element.assignedIndex = i;
-                element.setAllAngles((angleOffset * i) + globalOffset, angleOffset);
+                element.setAllAngles((angleOffset * i), angleOffset);
 
                 var rt = element.GetComponent<RectTransform>();
                 rt.rotation = Quaternion.Euler(0, 0, -element.angleOffset);
+                element.button.transform.localRotation = Quaternion.Euler(0, 0, element.angleOffset);
             }
 
             previousActiveIndex = Mathf.Clamp(previousActiveIndex, 0, elementCount - 1);
@@ -68,7 +67,7 @@ namespace WearableItemsAPI.UI
 
             rawAngle = Mathf.Atan2(mousePos.y - rt.position.y, mousePos.x - rt.position.x) * Mathf.Rad2Deg;
 
-            currentAngle = NormalizeAngle(-rawAngle + 90 - globalOffset + (angleOffset / 2f));
+            currentAngle = NormalizeAngle(-rawAngle + 90 + (angleOffset / 2f));
 
             if (angleOffset != 0 && elementCount > 0)
             {

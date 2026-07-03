@@ -16,7 +16,6 @@ namespace WearableItemsAPI.UI
         [SerializeField] GameObject radialMenuPrefab = null!;
         [SerializeField] GameObject radialMenuElementPrefab = null!;
         [SerializeField] Transform canvas = null!;
-        [SerializeField] GameObject iconObj = null!;
         [SerializeField] Image icon = null!;
         [SerializeField] TMP_Text iconLabel = null!;
         [SerializeField] Animator animator = null!;
@@ -43,6 +42,7 @@ namespace WearableItemsAPI.UI
         {
             if (Instance == this)
             {
+                logger.LogDebug("Destroying UIController");
                 Instance = null;
                 PlayerWearables.OnWearablesUpdate.RemoveListener(UpdateIcon);
             }
@@ -95,7 +95,10 @@ namespace WearableItemsAPI.UI
 
         public void UpdateIcon()
         {
-            iconObj.SetActive(localPlayer.GetWearables().Count > 0);
+            int count = localPlayer.GetWearables().Count;
+            logger.LogDebug("Updating icon, wearables count: " + count);
+            icon.enabled = count > 0;
+            iconLabel.enabled = count > 0;
             icon.color = new Color32((byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), (byte)UnityEngine.Random.Range(0, 255), 200);
             HUDManager.Instance.DisplayTip("WearableItemsAPI", $"Press {WearableItemsInputs.Instance.OpenUIKey_BindingDisplayString} to open the Wearable Items UI", false, true, "WearableItemsAPITip1");
         }

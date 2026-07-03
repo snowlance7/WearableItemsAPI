@@ -38,14 +38,8 @@ namespace WearableItemsAPI.UI
             rt = gameObject.GetComponent<RectTransform>();
         }
 
-        void Start()
-        {
-            rt.rotation = Quaternion.Euler(0, 0, -angleOffset);
-        }
-
         public void setAllAngles(float offset, float baseOffset)
         {
-
             angleOffset = offset;
             angleMin = offset - (baseOffset / 2f);
             angleMax = offset + (baseOffset / 2f);
@@ -53,7 +47,6 @@ namespace WearableItemsAPI.UI
 
         public void highlightThisElement(PointerEventData p)
         {
-
             ExecuteEvents.Execute(button.gameObject, p, ExecuteEvents.selectHandler);
             active = true;
             setParentMenuLable(label);
@@ -61,14 +54,12 @@ namespace WearableItemsAPI.UI
 
         public void setParentMenuLable(string l)
         {
-
             if (parentRM.textLabel != null)
                 parentRM.textLabel.text = l;
         }
 
         public void unHighlightThisElement(PointerEventData p)
         {
-
             ExecuteEvents.Execute(button.gameObject, p, ExecuteEvents.deselectHandler);
             active = false;
         }
