@@ -2,7 +2,7 @@
 using HarmonyLib;
 using static WearableItemsAPI.Plugin;
 
-namespace WearableItemsAPI
+namespace WearableItemsAPI.UI
 {
     [HarmonyPatch]
     internal static class Patches

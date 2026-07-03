@@ -2,9 +2,9 @@
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using static WearableItemsAPI.Core.WearableItem;
+using static WearableItemsAPI.WearableItem;
 
-namespace WearableItemsAPI.Core
+namespace WearableItemsAPI
 {
     public class WearableObject : PhysicsProp
     {
@@ -40,7 +40,7 @@ namespace WearableItemsAPI.Core
         public override void Start()
         {
             base.Start();
-            scanNode = base.gameObject.GetComponentInChildren<ScanNodeProperties>();
+            scanNode = gameObject.GetComponentInChildren<ScanNodeProperties>();
         }
 
         public override void Update()
@@ -63,16 +63,16 @@ namespace WearableItemsAPI.Core
         {
             if (parentObject != null && playerWornBy != null)
             {
-                base.transform.rotation = parentObject.rotation;
-                base.transform.Rotate(wearableItemProperties.useLocalOffsets && localPlayer == playerWornBy ? wearableItemProperties.wornRotationOffsetLocal : wearableItemProperties.wornRotationOffset);
-                base.transform.position = parentObject.position;
+                transform.rotation = parentObject.rotation;
+                transform.Rotate(wearableItemProperties.useLocalOffsets && localPlayer == playerWornBy ? wearableItemProperties.wornRotationOffsetLocal : wearableItemProperties.wornRotationOffset);
+                transform.position = parentObject.position;
                 Vector3 positionOffset = wearableItemProperties.useLocalOffsets && localPlayer == playerWornBy ? wearableItemProperties.wornPositionOffsetLocal : wearableItemProperties.wornPositionOffset;
                 positionOffset = parentObject.rotation * positionOffset;
-                base.transform.position += positionOffset;
+                transform.position += positionOffset;
 
                 if (radarIcon != null)
                 {
-                    radarIcon.position = base.transform.position;
+                    radarIcon.position = transform.position;
                 }
             }
             else
@@ -134,7 +134,7 @@ namespace WearableItemsAPI.Core
             {
                 var other = item.wearableItemProperties;
 
-                if (((other.restrictSlot || current.restrictSlot) && other.slot == current.slot) || (current.restrictions.Any(r => other.restrictions.Contains(r))))
+                if ((other.restrictSlot || current.restrictSlot) && other.slot == current.slot || current.restrictions.Any(r => other.restrictions.Contains(r)))
                 {
                     HUDManager.Instance.DisplayTip("Can't wear item", $"'{item.itemProperties.itemName}' is preventing you from wearing this item", true);
                     return false;
@@ -207,7 +207,7 @@ namespace WearableItemsAPI.Core
 
             parentObject = GetWearableParentObject();
 
-            base.gameObject.GetComponent<Collider>().enabled = false;
+            gameObject.GetComponent<Collider>().enabled = false;
             bool _showWearable = localPlayer == playerWornBy ? wearableItemProperties.showWearableOnClient : wearableItemProperties.showWearable;
             EnableItemMeshes(_showWearable);
             scanNode?.gameObject.SetActive(false);

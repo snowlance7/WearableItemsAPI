@@ -2,7 +2,7 @@
 using LethalCompanyInputUtils.BindingPathEnums;
 using UnityEngine.InputSystem;
 
-namespace WearableItemsAPI
+namespace WearableItemsAPI.UI
 {
     internal class WearableItemsInputs : LcInputActions
     {

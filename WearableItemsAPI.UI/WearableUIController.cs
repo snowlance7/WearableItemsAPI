@@ -3,11 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using WearableItemsAPI.Core;
-using static WearableItemsAPI.Core.WearableItem;
 using static WearableItemsAPI.Plugin;
+using static WearableItemsAPI.WearableItem;
 
-namespace WearableItemsAPI
+namespace WearableItemsAPI.UI
 {
     internal class WearableUIController : MonoBehaviour // TODO: Set up wiki
     {

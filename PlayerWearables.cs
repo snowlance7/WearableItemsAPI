@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace WearableItemsAPI.Core
+namespace WearableItemsAPI
 {
     public static class PlayerWearables
     {

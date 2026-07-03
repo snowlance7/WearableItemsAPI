@@ -2,7 +2,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace WearableItemsAPI.Core
+namespace WearableItemsAPI
 {
     internal static class PlayerControllerBExtensions
     {

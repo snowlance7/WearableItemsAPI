@@ -2,8 +2,8 @@
 
     <!-- BepInEx Properties -->
     <PropertyGroup>
-        <AssemblyName>Snowlance.WearableItemsAPI</AssemblyName>
-        <Product>WearableItemsAPI</Product>
+        <AssemblyName>Snowlance.WearableItemsAPI.UI</AssemblyName>
+        <Product>WearableItemsAPI.UI</Product>
         <!-- Change to whatever version you're currently on. -->
         <Version>0.2.0</Version>
     </PropertyGroup>
@@ -11,7 +11,7 @@
     <!-- Project Properties -->
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <RootNamespace>WearableItemsAPI</RootNamespace>
+        <RootNamespace>WearableItemsAPI.UI</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
@@ -45,28 +45,10 @@
         <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
     </PropertyGroup>
     <ItemGroup>
-      <Compile Remove="bin\**" />
-      <Compile Remove="WearableItemsAPI.Core\**" />
-      <Compile Remove="WearableItemsAPI.UI\**" />
-      <Compile Remove="WearableItemsAPIUnityProject\**" />
-      <EmbeddedResource Remove="bin\**" />
-      <EmbeddedResource Remove="WearableItemsAPI.Core\**" />
-      <EmbeddedResource Remove="WearableItemsAPI.UI\**" />
-      <EmbeddedResource Remove="WearableItemsAPIUnityProject\**" />
-      <None Remove="bin\**" />
-      <None Remove="WearableItemsAPI.Core\**" />
-      <None Remove="WearableItemsAPI.UI\**" />
-      <None Remove="WearableItemsAPIUnityProject\**" />
-    </ItemGroup>
-    <ItemGroup>
       <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\AssetBundles\ui-assets" />
       <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\en_US.json" />
       <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\ru_RU.json" />
       <Content Remove="C:\Users\snowl\.nuget\packages\rune580.mods.lethalcompany.inpututils\0.7.13\contentFiles\any\netstandard2.1\zh_CN.json" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Remove=".gitattributes" />
-      <None Remove=".gitignore" />
     </ItemGroup>
 
     <!-- Primary Package References -->
@@ -75,7 +57,8 @@
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all" />
-        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="81.0.0-ngd.0" Publicize="true" PrivateAssets="all" />
+        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="*-*" Publicize="true" PrivateAssets="all" />
+        <PackageReference Include="Rune580.Mods.LethalCompany.InputUtils" Version="0.7.13" />
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.62" IncludeAssets="compile" PrivateAssets="all" />
     </ItemGroup>
 
@@ -84,36 +67,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Wiki\" />
+      <ProjectReference Include="..\WearableItemsAPI.csproj" />
     </ItemGroup>
-  
-  <PropertyGroup>
-    <GeneratePluginInfo>true</GeneratePluginInfo>
-  </PropertyGroup>
-  <PropertyGroup>
-    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
-  </PropertyGroup>
-
-    <!-- Netcode Patcher Post-Build Event -->
-  <Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
-    <PropertyGroup>
-      <NetcodePatcherDepsListFile>$(IntermediateOutputPath)ncp-deps.list</NetcodePatcherDepsListFile>
-    </PropertyGroup>
-    <WriteLinesToFile File="$(NetcodePatcherDepsListFile)" Lines="@(ReferencePathWithRefAssemblies)" Overwrite="true" />
-    <Exec Command="netcode-patch -uv 2022.3.62 -nv 1.12.2 -tv 1.0.0 &quot;$(TargetPath)&quot; --dependency-file &quot;$(NetcodePatcherDepsListFile)&quot;" />
-  </Target>
-  
-    <!-- NuGet Stuff --><!--
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <PackageId>WearableItemsAPI</PackageId>
-    <Version>0.1.11</Version>
-    <Authors>snowlance7</Authors>
-    <Description>A customizable API for wearable items for Lethal Company</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/snowlance7/WearableItemsAPI</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageIcon>icon.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>-->
 </Project>

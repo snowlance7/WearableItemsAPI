@@ -153,8 +153,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4903959087099301102}
-  - component: {fileID: 7646241374642838475}
   - component: {fileID: 2455059479277469644}
+  - component: {fileID: 817647110421008916}
   m_Layer: 0
   m_Name: WearableItemsUI
   m_TagString: Untagged
@@ -179,40 +179,6 @@ Transform:
   - {fileID: 7735573103770514855}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7646241374642838475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6895237478774374693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 568879672, guid: 15430fced0bc5644591c9bda1289e1da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radialMenuPrefab: {fileID: 5606593723928068627, guid: 51b9f3f73396a6c4fb3ed24f5084e3a4,
-    type: 3}
-  radialMenuElementPrefab: {fileID: 3163986721906064144, guid: 4b60a410aabc10f44a5d0bd561ecfbdf,
-    type: 3}
-  canvas: {fileID: 1218398843714894814}
-  iconObj: {fileID: 5065069254538970828}
-  icon: {fileID: 5125379512789257282}
-  iconLabel: {fileID: 8149141496725598677}
-  animator: {fileID: 2455059479277469644}
-  bodyOutlineParts:
-  - {fileID: 21300000, guid: 0c36a05880f3d9241906149815281a96, type: 3}
-  - {fileID: 21300000, guid: 8311beaf5ee71114da90b77c8795264f, type: 3}
-  - {fileID: 21300000, guid: 580dde97330eaef48bc6cea06249ecc9, type: 3}
-  - {fileID: 21300000, guid: 95d49eb5a6e73b5479584281f1bff99e, type: 3}
-  - {fileID: 21300000, guid: 953331267ff8ae9419dd79f1572f7b1f, type: 3}
-  - {fileID: 21300000, guid: 52b51a69665edcd45b20142ad5c5a418, type: 3}
-  - {fileID: 21300000, guid: b7e19f983edb2b24fa649331106087db, type: 3}
-  - {fileID: 21300000, guid: d1b9521038feee74898814593cdc1b55, type: 3}
-  - {fileID: 21300000, guid: 74e6a25ae892f354bbc8c0761aa6a100, type: 3}
-  - {fileID: 21300000, guid: 69f3aa9bd81bbd04b92ce74d77b6422e, type: 3}
-  - {fileID: 21300000, guid: 4f45cb519e7ae9640a44c2d580c01e46, type: 3}
-  radial: {fileID: 0}
 --- !u!95 &2455059479277469644
 Animator:
   serializedVersion: 5
@@ -234,6 +200,41 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &817647110421008916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895237478774374693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 14767096, guid: 24995f0be58b03040a509d4ffc516239, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radialMenuPrefab: {fileID: 5606593723928068627, guid: 51b9f3f73396a6c4fb3ed24f5084e3a4,
+    type: 3}
+  radialMenuElementPrefab: {fileID: 3163986721906064144, guid: 4b60a410aabc10f44a5d0bd561ecfbdf,
+    type: 3}
+  canvas: {fileID: 1218398843714894814}
+  iconObj: {fileID: 5065069254538970828}
+  icon: {fileID: 5125379512789257282}
+  iconLabel: {fileID: 8149141496725598677}
+  animator: {fileID: 2455059479277469644}
+  bodyOutlineParts:
+  - {fileID: 21300000, guid: b43f2b5a391bb7f4a90bb6aead30410e, type: 3}
+  - {fileID: 21300000, guid: 0c36a05880f3d9241906149815281a96, type: 3}
+  - {fileID: 21300000, guid: 8311beaf5ee71114da90b77c8795264f, type: 3}
+  - {fileID: 21300000, guid: 580dde97330eaef48bc6cea06249ecc9, type: 3}
+  - {fileID: 21300000, guid: 95d49eb5a6e73b5479584281f1bff99e, type: 3}
+  - {fileID: 21300000, guid: 953331267ff8ae9419dd79f1572f7b1f, type: 3}
+  - {fileID: 21300000, guid: 52b51a69665edcd45b20142ad5c5a418, type: 3}
+  - {fileID: 21300000, guid: b7e19f983edb2b24fa649331106087db, type: 3}
+  - {fileID: 21300000, guid: d1b9521038feee74898814593cdc1b55, type: 3}
+  - {fileID: 21300000, guid: 74e6a25ae892f354bbc8c0761aa6a100, type: 3}
+  - {fileID: 21300000, guid: 69f3aa9bd81bbd04b92ce74d77b6422e, type: 3}
+  - {fileID: 21300000, guid: 4f45cb519e7ae9640a44c2d580c01e46, type: 3}
+  radial: {fileID: 0}
 --- !u!1 &8476554566231946460
 GameObject:
   m_ObjectHideFlags: 0

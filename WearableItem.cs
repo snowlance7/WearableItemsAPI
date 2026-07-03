@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace WearableItemsAPI.Core
+namespace WearableItemsAPI
 {
     [CreateAssetMenu(menuName = "WearableItemsAPI/WearableItem")]
     public class WearableItem : ScriptableObject

@@ -2,7 +2,7 @@
 
 If you haven't already, create a Unity 2022.3.62f2 project. You can follow the official setup guide [here](https://lethal.wiki/dev/initial-setup).
 
-Next, import **Snowlance.WearableItemsAPI.Core.dll** into your Unity project.
+Next, import **Snowlance.WearableItemsAPI.dll** into your Unity project.
 
 This guide assumes you already know how to create and register custom items. If you don't, it's recommended that you learn that process first before continuing.
 
