@@ -1,7 +1,10 @@
 ﻿using GameNetcodeStuff;
+using System.Collections;
 using System.Linq;
 using Unity.Netcode;
+using Unity.Services.Authentication.Generated;
 using UnityEngine;
+using static WearableItemsAPI.Plugin;
 using static WearableItemsAPI.WearableItem;
 
 namespace WearableItemsAPI
@@ -162,6 +165,7 @@ namespace WearableItemsAPI
 
         internal Transform GetWearableParentObject()
         {
+            logger.LogDebug("Getting wearable parent object");
             var p = wearableItemProperties;
 
             Transform root = playerWornBy!.playerBodyAnimator.transform;
@@ -205,7 +209,30 @@ namespace WearableItemsAPI
             playerWornBy = player;
             playerWornBy.DiscardHeldObject(false, playerWornBy.NetworkObject);
 
+            if (localPlayer != playerWornBy)
+            {
+                StartCoroutine(DelayWear(playerWornBy));
+                return;
+            }
+
             parentObject = GetWearableParentObject();
+            logger.LogDebug($"Parent set to {parentObject.name}");
+
+            gameObject.GetComponent<Collider>().enabled = false;
+            bool _showWearable = localPlayer == playerWornBy ? wearableItemProperties.showWearableOnClient : wearableItemProperties.showWearable;
+            EnableItemMeshes(_showWearable);
+            scanNode?.gameObject.SetActive(false);
+
+            player.AddWearable(this);
+            OnWear();
+        }
+
+        IEnumerator DelayWear(PlayerControllerB player)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            parentObject = GetWearableParentObject();
+            logger.LogDebug($"Parent set to {parentObject.name}");
 
             gameObject.GetComponent<Collider>().enabled = false;
             bool _showWearable = localPlayer == playerWornBy ? wearableItemProperties.showWearableOnClient : wearableItemProperties.showWearable;
