@@ -218,7 +218,9 @@ namespace WearableItemsAPI
             parentObject = GetWearableParentObject();
             logger.LogDebug($"Parent set to {parentObject.name}");
 
-            gameObject.GetComponent<Collider>().enabled = false;
+            transform.localScale = wearableItemProperties.useLocalOffsets ? wearableItemProperties.wornScaleLocal : wearableItemProperties.wornScale;
+            //gameObject.GetComponent<Collider>().enabled = false;
+            EnablePhysics(false);
             bool _showWearable = localPlayer == playerWornBy ? wearableItemProperties.showWearableOnClient : wearableItemProperties.showWearable;
             EnableItemMeshes(_showWearable);
             scanNode?.gameObject.SetActive(false);
@@ -234,7 +236,9 @@ namespace WearableItemsAPI
             parentObject = GetWearableParentObject();
             logger.LogDebug($"Parent set to {parentObject.name}");
 
-            gameObject.GetComponent<Collider>().enabled = false;
+            transform.localScale = wearableItemProperties.wornScale;
+            //gameObject.GetComponent<Collider>().enabled = false;
+            EnablePhysics(false);
             bool _showWearable = localPlayer == playerWornBy ? wearableItemProperties.showWearableOnClient : wearableItemProperties.showWearable;
             EnableItemMeshes(_showWearable);
             scanNode?.gameObject.SetActive(false);
@@ -263,6 +267,7 @@ namespace WearableItemsAPI
                 this
             );
 
+            transform.localScale = originalScale;
             EnablePhysics(true);
             startFallingPosition = transform.parent.InverseTransformPoint(transform.position);
             fallTime = 0f;
@@ -275,7 +280,7 @@ namespace WearableItemsAPI
 
             playerWornBy.RemoveWearable(this);
 
-            GetComponent<Collider>().enabled = true;
+            //GetComponent<Collider>().enabled = true;
             scanNode?.gameObject.SetActive(true);
             EnableItemMeshes(true);
             OnUnWear();

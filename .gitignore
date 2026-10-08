@@ -390,3 +390,4 @@ FodyWeavers.xsd
 *.VC.db
 *.apk
 *.unitypackage
+/WearableItemsAPIUnityProject/Assets/SharedAssets/LethalCompanyProject/Game

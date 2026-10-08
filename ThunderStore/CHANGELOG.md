@@ -1,3 +1,6 @@
+## 0.3.0
+- Added `wornScale` and `wornScaleLocal` to `WearableItem` for scale offsets when wearing a wearable item
+
 ## 0.2.1
 - Small bug fix
 

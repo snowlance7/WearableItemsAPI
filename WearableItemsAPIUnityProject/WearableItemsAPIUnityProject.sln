@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{9F5365B5-78F3-F8D6-239F-DD3A5F45B581}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChannelPacker", "ChannelPacker.csproj", "{5C540ADE-8554-3756-3F80-49B97EDBFAA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{9F5365B5-78F3-F8D6-239F-DD3A5F45B581}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F5365B5-78F3-F8D6-239F-DD3A5F45B581}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F5365B5-78F3-F8D6-239F-DD3A5F45B581}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C540ADE-8554-3756-3F80-49B97EDBFAA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C540ADE-8554-3756-3F80-49B97EDBFAA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C540ADE-8554-3756-3F80-49B97EDBFAA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C540ADE-8554-3756-3F80-49B97EDBFAA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

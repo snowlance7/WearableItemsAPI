@@ -45,6 +45,9 @@ namespace WearableItemsAPI
         [Tooltip("Rotational offset relative to the assigned slot or bone transform.")]
         public Vector3 wornRotationOffset = Vector3.zero;
 
+        [Tooltip("Scale relative to the assigned slot or bone transform.")]
+        public Vector3 wornScale = Vector3.zero;
+
 
         [Header("Positioning (Local Player)")]
 
@@ -59,6 +62,9 @@ namespace WearableItemsAPI
 
         [Tooltip("Rotational offset for the local player view.")]
         public Vector3 wornRotationOffsetLocal = Vector3.zero;
+
+        [Tooltip("Scale for the local player view.")]
+        public Vector3 wornScaleLocal = Vector3.zero;
 
 
         [Header("Visibility")]
