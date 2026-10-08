@@ -8,7 +8,7 @@ using static WearableItemsAPI.WearableItem;
 
 namespace WearableItemsAPI.UI
 {
-    internal class WearableUIController : MonoBehaviour // TODO: Set up wiki
+    internal class WearableUIController : MonoBehaviour
     {
         public static GameObject prefab = null!;
         public static WearableUIController? Instance;

@@ -11,21 +11,19 @@ namespace WearableItemsAPI.UI
     [BepInDependency(LethalCompanyInputUtils.MyPluginInfo.PLUGIN_GUID)]
     internal class Plugin : BaseUnityPlugin
     {
-        public static Plugin Instance = null!;
+        public static Plugin PluginInstance = null!;
 
-        public static ManualLogSource logger = null!;
+        public static ManualLogSource logger => PluginInstance.Logger;
 
         private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
-        public static PlayerControllerB localPlayer { get { return StartOfRound.Instance.localPlayerController; } }
+        public static PlayerControllerB localPlayer => StartOfRound.Instance.localPlayerController;
 
         public void Awake()
         {
-            if (Instance == null)
+            if (PluginInstance == null)
             {
-                Instance = this;
+                PluginInstance = this;
             }
-
-            logger = Instance.Logger;
 
             harmony.PatchAll();
 

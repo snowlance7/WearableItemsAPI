@@ -5,7 +5,7 @@
         <AssemblyName>Snowlance.WearableItemsAPI.UI</AssemblyName>
         <Product>WearableItemsAPI.UI</Product>
         <!-- Change to whatever version you're currently on. -->
-        <Version>0.2.0</Version>
+        <Version>0.3.1</Version>
     </PropertyGroup>
 
     <!-- Project Properties -->
